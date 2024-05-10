@@ -13,20 +13,20 @@ import axios from 'https://deno.land/x/axiod/mod.ts'
 import matter from 'https://jspm.dev/gray-matter'
 import { deepmerge, deepmergeCustom } from 'https://deno.land/x/deepmergets@v4.0.3/dist/deno/mod.ts'
 
-import { 
-    TMDB_COMPANIES, 
-    TMDB_LISTS, 
+import {
+    TMDB_COMPANIES,
+    TMDB_LISTS,
     storePath,
     markdownStorePath
 } from '../src/config.ts'
 import { byPremiere } from '../src/helpers/sort.ts'
-import { 
+import {
     upsertListingMarkdown,
     getDataFromListingContents,
-    getPartsFromMarkdown, 
+    getPartsFromMarkdown,
     makeTMDbMarkdownSection
 } from '../src/helpers/markdown-page.ts'
-import { 
+import {
     listingMergeConfig,
     makeListingEndpoint
 } from '../src/helpers/listing.ts'
@@ -57,15 +57,15 @@ function cleanListings ( fetchedListings ) {
         // so we don't get a bunch of noise in our commits
         delete fetchedListings[id].popularity
         delete fetchedListings[id].vote_count
-        
+
 
     }
 
     return fetchedListings
 }
 
-async function fetchListings ({ 
-    endpoint, 
+async function fetchListings ({
+    endpoint,
     params = {},
     listKey = 'results',
     tags = []
@@ -85,8 +85,9 @@ async function fetchListings ({
 
         const requestOptions = {
             params: {
+                // get one from https://www.themoviedb.org/settings/api
                 api_key: Deno.env.get('TMDB_API_KEY'),
-                // language: 'en-US',
+                language: 'zh-CN',
                 // sort_by: 'popularity.desc',
                 // with_companies: company.id,
                 page,
@@ -101,7 +102,7 @@ async function fetchListings ({
                 console.error( error )
             })
 
-        
+
         for ( const result of data[ listKey ] ) {
 
             // If we've already seen this title, add the new company to the list
@@ -109,12 +110,15 @@ async function fetchListings ({
                 continue
             }
 
-            const title = result.name || result.title
+            const title = result.original_name || result.original_title
+            if (title === undefined) {
+                console.log(`original title not found for: ${JSON.stringify(result)}`)
+            }
             const slug = makeSlug( title )
 
             fetchedListings[ result.id ] = {
                 ...result,
-                title,
+                title: result.name || result.title,
                 slug,
                 tags,
             }
@@ -127,32 +131,32 @@ async function fetchListings ({
     return cleanListings( fetchedListings )
 }
 
-// Fetches movies from the 
+// Fetches movies from the
 async function fetchListingsFromCompanies ( companies ) {
     const listings = {}
 
     for ( const company of companies ) {
 
-        const movies = await fetchListings({ 
-            endpoint: `/3/discover/movie`, 
-            params: { with_companies: company.id }, 
+        const movies = await fetchListings({
+            endpoint: `/3/discover/movie`,
+            params: { with_companies: company.id },
             tags: [ 'movie', `company-${ company.id }` ]
         })
-        const tvShows = await fetchListings({ 
-            endpoint: `/3/discover/tv`, 
-            params: { with_companies: company.id }, 
+        const tvShows = await fetchListings({
+            endpoint: `/3/discover/tv`,
+            params: { with_companies: company.id },
             tags: [ 'tv', `company-${ company.id }` ]
         })
 
         // Merge into listings
         for ( const id in movies ) {
-            listings[ id ] = deepmergeListings( movies[ id ], listings[ id ] || {} ) 
+            listings[ id ] = deepmergeListings( movies[ id ], listings[ id ] || {} )
         }
-        
+
         for ( const id in tvShows ) {
-            listings[ id ] = deepmergeListings( tvShows[ id ], listings[ id ] || {} ) 
+            listings[ id ] = deepmergeListings( tvShows[ id ], listings[ id ] || {} )
         }
-        
+
     }
 
     // Sort movies by release_date/first_air_date and empty first
@@ -168,21 +172,20 @@ async function fetchListingsFromLists ( lists ) {
 
     for ( const list of lists ) {
 
-        const fetchedListings = await fetchListings({ 
+        const fetchedListings = await fetchListings({
             // https://api.themoviedb.org/3/list/8204859?append_to_response=videos,images,company&api_key={{API_KEY}}
-            endpoint: `/3/list/${ list.id }`, 
+            endpoint: `/3/list/${ list.id }`,
             params: {
                 append_to_response: 'videos,images,company'
             },
-            tags: [ `list-${ list.id }` ], 
+            tags: [ `list-${ list.id }` ],
             listKey: 'items'
         })
-
         // Merge into listings
         for ( const id in fetchedListings ) {
-            listings[ id ] = deepmergeListings( fetchedListings[ id ], listings[ id ] || {} ) 
+            listings[ id ] = deepmergeListings( fetchedListings[ id ], listings[ id ] || {} )
         }
-        
+
     }
 
     return listings//sortedListings
@@ -219,7 +222,7 @@ async function writeMarkdownFileDeno ({ path, markdownBody, pageMeta }) {
     const markdownContent = matter.stringify( markdownBody, pageMeta )
 
     // console.log('markdownContent', markdownContent)
-    
+
     await Deno.writeTextFile( path, markdownContent )
 }
 
@@ -229,9 +232,9 @@ async function readMarkdownFileDeno ( filePath ) {
     const markdownContent = new TextDecoder( 'utf-8' ).decode( await Deno.readFile( filePath ) )
 
 
-    return await getDataFromListingContents({ 
-        markdown: markdownContent, 
-        matter 
+    return await getDataFromListingContents({
+        markdown: markdownContent,
+        matter
     })
 }
 
@@ -276,7 +279,7 @@ async function saveListingsAsMarkdown ( listings ) {
         await upsertListingMarkdown( {
             listing,
             tmdb: listing,
-            readMarkdownFile: readMarkdownFileDeno, 
+            readMarkdownFile: readMarkdownFileDeno,
             writeMarkdownFile: writeMarkdownFileDeno,
             exists: exists
         })
@@ -285,7 +288,7 @@ async function saveListingsAsMarkdown ( listings ) {
 }
 
 ;(async () => {
-    
+
     let listings = []
 
     const companylistings = await fetchListingsFromCompanies( TMDB_COMPANIES )

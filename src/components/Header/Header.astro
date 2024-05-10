@@ -11,7 +11,7 @@ import CircleButton from '~/src/components/circle-button.vue'
 // const { currentPage } = Astro.props;
 // const lang = currentPage && getLanguageFromURL(currentPage)
 
-const lists = await Astro.glob( '/src/pages/en/lists/*.md' )
+const lists = await Astro.glob( '/src/pages/zh/lists/*.md' )
 const stories = await Astro.glob( '/src/pages/stories/*.md' )
 
 const pages = [
@@ -41,21 +41,21 @@ const menuId = 'main-menu'
 
 const navItems = [
     {
-        name: 'Lists',
+        name: '列表',
         items: [
             {
-                name: '📜 Marvel Phase 0',
-                description: 'Marvel films and shows before the start of the Marvel Cinematic Universe',
+                name: '📜 第零阶段',
+                description: '在MCU前的电影和剧集',
                 url: '/marvel-phase-0',
             },
             {
-                name: '🔢 Marvel Viewing Order',
-                description: 'Reccomended viewing order for Marvel films and shows',
+                name: '🔢 漫威观看顺序',
+                description: '推荐的漫威观看顺序',
                 url: '/marvel-cinematic-universe-in-timeline-order',
             },
             {
-                name: '♾ All Marvel Cinematic Universe',
-                description: 'Anything and Everything Marvel Cinematic Universe so far, sorted by release date',
+                name: '♾ MCU完整版',
+                description: 'MCU所有影片，按发布顺序排列',
                 url: '/marvel-cinematic-universe-movies-in-order',
             },
 
@@ -65,47 +65,47 @@ const navItems = [
             //     url: '/marvel-cinematic-universe-in-timeline-order',
             // },
 
-            menuItemFromUrl( '/en/lists/infinity-saga', '💎 Infinity Saga' ),
+            menuItemFromUrl( '/zh/lists/infinity-saga', '💎 无限传奇' ),
 
-            menuItemFromUrl( '/en/lists/phase-one', '1️⃣ Marvel Phase 1' ),
-            menuItemFromUrl( '/en/lists/phase-two', '2️⃣ Marvel Phase 2' ),
-            menuItemFromUrl( '/en/lists/phase-three', '3️⃣ Marvel Phase 3' ),
+            menuItemFromUrl( '/zh/lists/phase-one', '1️⃣ 第一阶段' ),
+            menuItemFromUrl( '/zh/lists/phase-two', '2️⃣ 第二阶段' ),
+            menuItemFromUrl( '/zh/lists/phase-three', '3️⃣ 第三阶段' ),
 
 
-            menuItemFromUrl( '/en/lists/multiverse-saga', '🌌 Multiverse Saga' ),
+            menuItemFromUrl( '/zh/lists/multiverse-saga', '🌌 多元宇宙传奇' ),
 
-            menuItemFromUrl( '/en/lists/phase-four', '4️⃣ Marvel Phase 4' ),
-            menuItemFromUrl( '/en/lists/phase-five', '5️⃣ Marvel Phase 5' ),
-            menuItemFromUrl( '/en/lists/phase-six', '6️⃣ Marvel Phase 6' ),
+            menuItemFromUrl( '/zh/lists/phase-four', '4️⃣ 第四阶段' ),
+            menuItemFromUrl( '/zh/lists/phase-five', '5️⃣ 第五阶段' ),
+            menuItemFromUrl( '/zh/lists/phase-six', '6️⃣ 第六阶段' ),
 
-            menuItemFromUrl( '/en/lists/wong-cinematic-universe', '🥋 The Wong Cinemetic Universe' ),
+            menuItemFromUrl( '/zh/lists/wong-cinematic-universe', '🥋 王电影宇宙' ),
         ]
     },
     {
         name: 'Stories',
         items: [
-            menuItemFromUrl( '/stories/kang-anthology', '👑 Kang Anthology' ),
+            menuItemFromUrl( '/stories/kang-anthology', '👑 征服者康精选' ),
 
-            menuItemFromUrl( '/stories/wakanda-anthology', '🙅🏾‍♀️ Wakanda Forever Anthology' ),
+            menuItemFromUrl( '/stories/wakanda-anthology', '🙅🏾‍♀️ 瓦坎达精选' ),
             {
-                name: '🏰 Everything Announced at D23 Marvel Panel',
-                description: 'Details for all the announcements from the Marvel Panel at D23 Expo',
-                url: '/stories/d23-expo-marvel-panel/',
+                "name": "🏰 D23 漫威发布会上的所有公告",
+                "description": "D23 博览会上漫威发布会的所有公告详情",
+                "url": "/stories/d23-expo-marvel-panel/"
             },
             {
-                name: '🧑‍🎤 She-Hulk Watch List',
-                description: 'What to watch while you\'re waiting for the next She-Hulk episode or after you finish the series.',
-                url: '/stories/she-hulk-watch-list/',
+                "name": "🧑‍🎤 女浩克观影指南",
+                "description": "在等待下一集《女浩克》或追完整个系列后可以观看的内容。",
+                "url": "/stories/she-hulk-watch-list/"
             },
             {
-                name: '🔨 Thor Anthology',
-                description: 'The complete Thor universe, in order',
-                url: '/stories/thor-anthology',
+                "name": "🔨 雷神全集",
+                "description": "完整的雷神宇宙，按顺序排列",
+                "url": "/stories/thor-anthology"
             },
             {
-                name: '🪄 Wong Anthology',
-                description: 'The complete Wong Cinematic Universe, in order',
-                url: '/stories/wong-cinematic-universe',
+                "name": "🪄 王全集",
+                "description": "完整的王电影宇宙，按顺序排列",
+                "url": "/stories/wong-cinematic-universe"
             }
         ]
     }
@@ -139,7 +139,7 @@ const navItems = [
                             class="relative text-gray-50/100 group bg-black/10 rounded-md inline-flex items-center text-base font-medium hover: focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             aria-expanded={ expanded }
                         >
-                            <span>Lists</span>
+                            <span>列表</span>
                             <!--
                                 Heroicon name: solid/chevron-down
 

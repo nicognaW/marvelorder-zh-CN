@@ -1,8 +1,7 @@
 ---
-title: Every Phase Two Marvel Film or Series
-description: The 12 Marvel films or series from Phase Two
+title: '漫威第二阶段的每一部电影或剧集'
+description: '漫威第二阶段的十二部电影或剧集'
 layout: ../../layouts/list-story.astro
-coverAriaLabel: Iron Man 3
-coverPosterUrl: /.netlify/functions/tmdb-image/tKa1gmGKAUVYnflYcadipeL3d9h.webp?transparent=0
+coverAriaLabel: '钢铁侠3'
+coverPosterUrl: '/.netlify/functions/tmdb-image/tKa1gmGKAUVYnflYcadipeL3d9h.webp?transparent=0'
 ---
-

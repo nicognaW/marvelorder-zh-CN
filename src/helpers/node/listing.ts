@@ -126,7 +126,7 @@ export class MappedListing {
     get dateHumanReadable () {
         // Just say Date Unknown for null dates
         if ( !this.hasDate ) {
-            return 'Order TBA'
+            return '未知'
         }
 
         if ( typeof this.dateString === 'string' && this.dateString.trim().length === 4 ) {

@@ -9,7 +9,7 @@ import ListingRow from '../components/listing-row.vue'
 
 export const prerender = true
 
-const pages = await Astro.glob( '/src/pages/en/*.md' )
+const pages = await Astro.glob( '/src/pages/zh/*.md' )
 
 
 const listings = await getListingsFromFilePaths( pages.map( page => page.file ) )
@@ -19,14 +19,14 @@ const listings = await getListingsFromFilePaths( pages.map( page => page.file ) 
 ---
 <Layout>
 
-	
-	<ListingRow 
+
+	<ListingRow
 		client:load
 		listings={ convertNullValuesForAstro( listings ) }
 		initial-sort="default"
 	/>
-	
-  
+
+
 	<script is:inline>
 		const initialListing = document.querySelector('.listing-card-initial')
 		// Trigger scroll to out upcoming listing here

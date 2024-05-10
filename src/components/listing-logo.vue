@@ -1,11 +1,4 @@
-<template>
-    <img
-        :data-src="srcImage"
-        :data-srcset="srcSet"
-        class="lazyload"
-        :alt="alt"
-    >
-</template>
+<template />
 
 <script>
 import 'lazysizes/plugins/attrchange/ls.attrchange'

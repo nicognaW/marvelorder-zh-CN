@@ -74,7 +74,7 @@ export function makeListingEndpoint ( listing: Listing ) {
         throw new TypeError( `Listing id must be a number and not empty. Got ${ listing.id }` )
     }
 
-    return `/en/${ listing.slug }-${ listing.id }`
+    return `/zh/${ listing.slug }-${ listing.id }`
 }
 
 export function convertNullValuesForAstro ( listings: Listing[] ) {

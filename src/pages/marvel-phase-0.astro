@@ -1,8 +1,8 @@
 ---
 // import { byListingDate } from '~/src/helpers/sort.ts'
 import { getListingsFromFilePaths } from '~/src/helpers/node/listing-files.ts'
-import { 
-	isPhaseZero, 
+import {
+	isPhaseZero,
 	FilteredListings
 } from '~/src/helpers/listing-filters'
 // @ts-ignore
@@ -11,12 +11,12 @@ import { convertNullValuesForAstro } from '~/src/helpers/listing.ts'
 import Layout from '../layouts/HorizontalScroll.astro'
 import ListingRow from '../components/listing-row.vue'
 
-const pages = await Astro.glob( '/src/pages/en/*.md' )
+const pages = await Astro.glob( '/src/pages/zh/*.md' )
 
 const allListings = await getListingsFromFilePaths( pages.map( page => page.file ) )
 
-const mcuFilteredListings = new FilteredListings({ 
-	listings: allListings, 
+const mcuFilteredListings = new FilteredListings({
+	listings: allListings,
 	initialFilters: new Map([
 		[ isPhaseZero, true ]
 	]),
@@ -32,14 +32,14 @@ const rawListings = mcuFilteredListings.list.map( listing => listing.sourceListi
 		description: 'From Howard the Duck to Nick Fury, the extensive list of Marvel films and series before May 2, 2008, the day we were first grace with Robert Downey Jr as Iron-Man. Browse the list, watch, and track what you\'ve seen.',
 	}}
 >
-	
-	<ListingRow 
+
+	<ListingRow
 		client:load
 		listings={ convertNullValuesForAstro( rawListings ) }
 		initial-sort="none"
 	/>
-	
-  
+
+
 	<script is:inline>
 		const initialListing = document.querySelector('.listing-card-initial')
 		// Trigger scroll to out upcoming listing here

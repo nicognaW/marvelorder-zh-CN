@@ -1,13 +1,13 @@
 export const SITE = {
-    title: 'MarvelOrder.com',
-    description: 'List of Marvel movies and shows ordered chronologically, release, and more. ',
-    defaultLanguage: 'en_US',
+    title: '漫威影业时间线',
+    description: '',
+    defaultLanguage: 'zh-CN',
 }
 
 export const OPEN_GRAPH = {
     image: {
         src: 'https://marvelorder.com/og-image.png',
-        alt: 'MarvelOrder.com',
+        alt: '漫威影业时间线',
     },
     twitter: 'thatguysam',
 }
@@ -31,23 +31,15 @@ export const GITHUB_EDIT_URL = 'https://github.com/ThatGuySam/marvelorder/blob/m
 // }
 
 export const SIDEBAR = {
-    en: [
-        { text: '', header: true },
-        { text: 'Section Header', header: true },
-        { text: 'Introduction', link: 'en/introduction' },
-        { text: 'Page 2', link: 'en/page-2' },
-        { text: 'Page 3', link: 'en/page-3' },
-
-        { text: 'Another Section', header: true },
-        { text: 'Page 4', link: 'en/page-4' },
-    ],
+    en: [],
+    zh: [],
 }
 
 export const storePath = './src/json'
 
 export const markdownStorePath = './src/pages'
 
-export const listingsGlobPattern = 'src/pages/en/*.md'
+export const listingsGlobPattern = 'src/pages/zh/*.md'
 
 export const storiesGlobPattern = 'src/pages/stories/*.md'
 

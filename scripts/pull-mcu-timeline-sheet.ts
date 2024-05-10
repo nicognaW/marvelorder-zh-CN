@@ -11,7 +11,6 @@ import {
     organizeOrderData,
 } from '~/src/helpers/node/mcu-timeline-sheet.ts'
 import {
-    makeInUniverseMarkdown,
     makeUpcomingListingsMarkdown,
     updateReadmeListContent,
 } from '~/src/helpers/node/readme.ts'
@@ -231,7 +230,7 @@ function buildReadmeList ( matchesMap: Map<number, any> ) {
 
     const updatedList = buildReadmeList( matches )
 
-    // // console.log( 'updatedList', updatedList )
+    console.log( 'updatedList', updatedList )
 
     await updateReadmeListContent( updatedList, 'viewing-order-list' )
 
@@ -239,11 +238,11 @@ function buildReadmeList ( matchesMap: Map<number, any> ) {
 
     console.log( 'Updating README in-universe-list' )
 
-    const inUniverseList = await makeInUniverseMarkdown()
-
+    // const inUniverseList = await makeInUniverseMarkdown()
+    //
     // console.log( 'updatedList', updatedList )
-
-    await updateReadmeListContent( inUniverseList, 'in-universe-list' )
+    //
+    // await updateReadmeListContent( inUniverseList, 'in-universe-list' )
 
     console.log( 'Done' )
 

@@ -4,23 +4,19 @@ const { path } = Astro.props
 
 
 const stories = await Astro.glob('../../pages/stories/*.md')
-const lists = await Astro.glob('../../pages/en/lists/*.md')
+const lists = await Astro.glob('../../pages/zh/lists/*.md')
 
 const menus = [
     {
-        heading: 'She-Hulk',
-        pages: stories.filter( story => story.frontmatter.title.toLowerCase().includes('she-hulk') )
-    },
-    {
-        heading: 'Marvel Phases',
-        pages: stories.filter( story => story.frontmatter.title.toLowerCase().includes('phase') )
+        heading: '阶段',
+        pages: stories.filter( story => story.frontmatter.title.toLowerCase().includes('阶段') )
     },
     // {
     //     heading: 'stories',
     //     pages: stories
     // },
     {
-        heading: 'Lists',
+        heading: '列表',
         pages: lists
     }
 ]
@@ -55,7 +51,7 @@ const menus = [
 
 	<div class="text-xs opacity-20"></div>
 
-	<div class="text-xs opacity-20">This site is not affiliated with or endorsed by Marvel. </div>
+	<div class="text-xs opacity-20">本网站不隶属于或由漫威认可。</div>
 
 	<div class="text-xs opacity-50"></div>
 </div>

@@ -1,41 +1,33 @@
 ---
-title: 'Every appearance of Wakanda in Movies and Series'
-description: 'Catch up on every Appearance or mention of Wakanda and Black Panther in Movies and Series so far, in order of release. '
+title: '瓦坎达在电影和电视剧中的每一次亮相'
+description: '按上映顺序整理，全面回顾瓦坎达和黑豹在电影和电视剧中的每一次亮相或提及。'
 layout: ../../layouts/list-story.astro
 coverAriaLabel: "Namor deflecting an attack"
-coverVideoUrl: https://vumbnail.com/_cCrp8gDsVA.mp4
-coverPosterUrl: https://vumbnail.com/sWi6zoN5OT8.jpg
+coverPosterUrl: https://image.tmdb.org/t/p/original/oSFn40haOsMgcJLRH1H4LgW9oar.jpg
 ---
 
 
 ## Cover
 
-Catch up on every Appearance or mention of Wakanda and Black Panther in Movies and Series so far, in order of release. 
+按上映顺序全面回顾瓦坎达和黑豹在电影和电视剧中的每一次亮相或提及。
 
+## [美国队长：复仇者先锋](https://marvelorder.com/en/captain-america-the-first-avenger-1771/)
+霍华德·斯塔克开始展示一种由斯塔克工业的非洲研究人员发现的金属——振金，并与切斯特·菲利普斯上校会面。遭到九头蛇刺客袭击后，斯塔克决定加入菲利普斯上校新成立的战略科学预备队。
 
-## [Captain America: The First Avenger](https://marvelorder.com/en/captain-america-the-first-avenger-1771/)
-Howard Stark begins a demonstration which would showcase vibranium, a metal discovered by Stark Industries researchers in Africa, and then meets with Colonel Chester Phillips. After being attacked by HYDRA assassins Stark agrees to join Col Phillip's newly created Strategic Science Reserve.
+## [复仇者联盟2：奥创纪元](https://marvelorder.com/en/avengers-age-of-ultron-99861)
+奥创与旺达和皮特罗兄妹前往非洲一个军火商乌利西斯·克劳的基地，获取从瓦坎达偷来的振金，以便奥创能打造一个新身体，这个身体最终成为幻视。
 
+## [美国队长3：内战](https://marvelorder.com/en/captain-america-civil-war-271110)
+我们首次见到瓦坎达国王特查卡与王子特查拉。在维也纳签署索科维亚协议期间，一场恐怖袭击炸死了瓦坎达国王特查卡，监控摄像头显示嫌疑人为詹姆斯·巴恩斯。特查卡的儿子特查拉誓要复仇，并站在托尼·斯塔克一边对抗史蒂夫·罗杰斯，两派英雄在机场停机坪展开一场激烈冲突。追踪史蒂夫和冬兵后，特查拉发现父亲其实是被赫尔穆特·泽莫杀害的。
 
-## [Avengers: Age of Ultron](https://marvelorder.com/en/avengers-age-of-ultron-99861)
-Ultron and the Maximoff twins visit the base of arms dealer Ulysses Klaue in an African shipyard to obtain Vibranium stolen from Wakanda so that Ultron can build a new vibranium infuse body that eventually becomes Vision. 
+## [黑豹](https://marvelorder.com/en/black-panther-284054)
+特查拉国王回到与世隔绝、科技先进的非洲国家瓦坎达，成为新一任领袖。然而，他发现自己受到来自国内外的势力挑战。身为瓦坎达国王，特查拉获得黑豹的力量，与前女友娜奇雅、母后、妹妹、护卫队以及美国特工一起，阻止瓦坎达陷入世界大战。
 
+## [复仇者联盟3：无限战争](https://marvelorder.com/en/avengers-infinity-war-299536)
+得知灭霸即将来地球夺取最后一颗无限宝石后，特查拉国王率领瓦坎达军队捍卫藏在幻视头上的这颗宝石。灭霸最终在瓦坎达捕获这颗宝石，杀死幻视，并打响响指消灭宇宙中一半的生命，包括特查拉国王和一半的复仇者。
 
-## [Captain America: Civil War](https://marvelorder.com/en/captain-america-civil-war-271110)
-We're intoduced to King T'Chaka and Prince T'Challa. In Vienna, where the signing of the Sockovia Accords is to take place, a terrorist bomb kills King T'Chaka of Wakanda. When security cameras reveal the culprit as James Barnes. T'Chaka's son T'Challa vows revenge. T'Challa sides with Tony Stark against Steve Rogers resulting in a spectular conflict between all the heroes on both sides at an airport tarmac. After chasing Steve Rogers and the Winter Soldier T'Challa discovers his father was actually killed by Helmut Zemo. 
+## [复仇者联盟4：终局之战](https://marvelorder.com/en/avengers-endgame-299534)
+5年后，复仇者们冒险穿越时间重夺无限宝石，将宇宙中被消灭的一半生命带回。灭霸通过时间追踪到复仇者，准备彻底消灭他们。就在原复仇者几乎被击溃之际，奇异博士等法师开启传送门，特查拉国王率领复活的瓦坎达军队、掠夺者、阿斯加德军队、卡玛泰姬的法师们，以及其他盟友一同对抗灭霸，最终战胜了他和他的军队。
 
-
-## [Black Panther](https://marvelorder.com/en/black-panther-284054)
-King T'Challa returns home to the reclusive, technologically advanced African nation of Wakanda to serve as his country's new leader. However, T'Challa soon finds that he is challenged for the throne by factions within his own country as well as without. Using powers reserved to Wakandan kings, T'Challa assumes the Black Panther mantle to join with ex-girlfriend Nakia, the queen-mother, his princess-kid sister, members of the Dora Milaje (the Wakandan 'special forces') and an American secret agent, to prevent Wakanda from being dragged into a world war. 
-
-
-## [Avengers: Infinity War](https://marvelorder.com/en/avengers-infinity-war-299536)
-After learning that the Mad Titan Thanos is coming to Earth capture last of the Infinity Stones, King T'Challa commits the Wakandan army to fight and defend the final stone, in Vison head. Thanos arrives in Wakanda and capture the final stone, killing Vison, and is able to snap away half of all life in the Universe, including King T'Challa and half of the Avengers. 
-
-
-## [Avengers: Endgame](https://marvelorder.com/en/avengers-endgame-299534)
-5 years later, after completing a risky Time Heist to recapture the Infinity Stones and bring back half the universe, Thanos follows the Avengers through time to end the Avengers once and for all, this time with a massive army. The original Avengers are about to be destroyed when Sorcerer portals start opening to reveal the King T'Challa and the restored Wakandan Army, The Ravangers, The Asgardian Army, the Sorceres of Kamar-Taj, and many more to fight and overcome Thanos and his world conquering army. 
-
-
-## [The Falcon and the Winter Soldier](https://marvelorder.com/en/the-falcon-and-the-winter-soldier-88396)
-After deafeating a fake Captain America, The Winter Soldier finds Zemo in Sokovia and hands him over to the Dora Milaje to receive justice for murdering King T'Chaka. 
+## [猎鹰与冬兵](https://marvelorder.com/en/the-falcon-and-the-winter-soldier-88396)
+击败冒牌美国队长后，冬兵在索科维亚找到泽莫并将其交给多拉·米拉杰，以为谋杀特查卡国王一事接受审判。

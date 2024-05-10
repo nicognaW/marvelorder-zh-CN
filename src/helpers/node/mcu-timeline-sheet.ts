@@ -44,7 +44,7 @@ export function matchListingToOrdered ( listing, orderedEntry ) {
         return false
     }
 
-    const listingSlug = makeSlug( listing.title )
+    const listingSlug = makeSlug( listing.original_title || listing.original_name || listing.name || listing.title )
     const orderedSlug = makeSlug( orderedEntry.title )
 
     // console.log( 'listingSlug', listingSlug )
