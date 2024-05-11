@@ -73,6 +73,9 @@ export function getYearAndMonth(date: string) {
 }
 
 export class MappedListing {
+    sourceListing
+    isMappedListing = true
+
     constructor(listing: Listing) {
         this.sourceListing = listing
 
@@ -81,10 +84,6 @@ export class MappedListing {
             this[key] = value
         }
     }
-
-    sourceListing
-
-    isMappedListing = true
 
     get dateString() {
         return getDateString(this.sourceListing)
@@ -152,28 +151,11 @@ export class MappedListing {
         return `${CONFIG.GITHUB_EDIT_URL}src/pages${this.endpoint}.md`
     }
 
-    backdrop(params = {transparent: 0}) {
-        if (!this.sourceListing?.backdrop_path) {
-            return null
-        }
-
-        return makeTmdbImageUrl(this.sourceListing.backdrop_path, params)
-    }
-
     get elementId() {
         return [
             this.sourceListing.slug,
             this.sourceListing.id,
         ].join('-')
-    }
-
-    hasTag(tagName: string) {
-        // If this listting has no tags, return false
-        if (!this.sourceListing?.tags) {
-            return false
-        }
-
-        return this.sourceListing.tags.includes(tagName)
     }
 
     get defaultWatchLinkKey() {
@@ -193,5 +175,22 @@ export class MappedListing {
             key: this.defaultWatchLinkKey,
             href: this.sourceListing.watchLinks[this.defaultWatchLinkKey],
         }
+    }
+
+    backdrop(params = {transparent: 0}) {
+        if (!this.sourceListing?.backdrop_path) {
+            return null
+        }
+
+        return makeTmdbImageUrl(this.sourceListing.backdrop_path, params)
+    }
+
+    hasTag(tagName: string) {
+        // If this listting has no tags, return false
+        if (!this.sourceListing?.tags) {
+            return false
+        }
+
+        return this.sourceListing.tags.includes(tagName)
     }
 }

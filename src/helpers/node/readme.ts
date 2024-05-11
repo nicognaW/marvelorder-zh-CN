@@ -2,9 +2,7 @@ import fs from 'fs-extra'
 
 import type {Listing} from '~/src/helpers/types.ts'
 
-import {
-    getInUniverseTimelineAndListings,
-} from '~/src/helpers/node/in-universe-timeline.ts'
+import {getInUniverseTimelineAndListings,} from '~/src/helpers/node/in-universe-timeline.ts'
 
 export function updateMarkdownContent(options: any = {}) {
     const {

@@ -35,9 +35,11 @@
         >
             <div class="flex">
                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path clip-rule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                          fill-rule="evenodd"/>
+                    <path
+                        clip-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                        fill-rule="evenodd"
+                    />
                 </svg>
                 <div>
                     Watch on Prime Video
@@ -63,14 +65,17 @@
             <div
                 v-if="isMcuSheetOrdered(mappedListing)"
             >
-                Timeline Order data via <a class="underline"
-                                           href="https://docs.google.com/spreadsheets/d/1Xfe--9Wshbb3ru0JplA2PnEwN7mVawazKmhWJjr_wKs/edit#gid=0">r/MarvelStudios
+                Timeline Order data via <a
+                class="underline"
+                href="https://docs.google.com/spreadsheets/d/1Xfe--9Wshbb3ru0JplA2PnEwN7mVawazKmhWJjr_wKs/edit#gid=0"
+            >r/MarvelStudios
                 MCU Viewing</a>
             </div>
         </div>
 
         <span
-            class="relative z-0 inline-flex text-center md:flex-row flex-col shadow-sm md:divide-x md:divide-y-0 divide-y divide-gray-700 border border-gray-300 rounded-md bg-black/50 md:py-3 md:px-0 px-4">
+            class="relative z-0 inline-flex text-center md:flex-row flex-col shadow-sm md:divide-x md:divide-y-0 divide-y divide-gray-700 border border-gray-300 rounded-md bg-black/50 md:py-3 md:px-0 px-4"
+        >
             <template
                 v-for="(link, i) in links"
                 :key="i"

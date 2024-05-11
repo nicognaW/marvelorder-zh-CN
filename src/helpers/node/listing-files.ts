@@ -7,25 +7,13 @@ import {capitalCase} from 'change-case'
 import {listingsGlobPattern} from '~/src/config.ts'
 
 import {trimCharacter} from '~/src/helpers/string.ts'
-import {
-    ensureMappedListing,
-    ensureMappedListings,
-    makeSlug,
-    mergeListingData,
-} from '~/src/helpers/node/listing.ts'
-import {
-    getDataFromListingContents,
-    makeNewListingContents,
-} from '~/src/helpers/markdown-page.ts'
+import {ensureMappedListing, ensureMappedListings, makeSlug, mergeListingData,} from '~/src/helpers/node/listing.ts'
+import {getDataFromListingContents, makeNewListingContents,} from '~/src/helpers/markdown-page.ts'
 
 import type {Filter, Listing, ListingFrontMatter} from '~/src/helpers/types.ts'
 
 import * as filterExports from '~/src/helpers/listing-filters.ts'
-
-import {
-    FilteredListings,
-    isUpcoming,
-} from '~/src/helpers/listing-filters.ts'
+import {FilteredListings, isUpcoming} from '~/src/helpers/listing-filters.ts'
 
 export async function getListingFiles() {
     const listingFiles = await glob(listingsGlobPattern)
