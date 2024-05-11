@@ -1,7 +1,5 @@
 import type {FunctionalComponent} from 'preact'
 import {useEffect, useRef, useState} from 'preact/hooks'
-import React from "react";
-
 
 const TableOfContents: FunctionalComponent<{ headers: any[] }> = ({headers = []}) => {
     const itemOffsets = useRef([])

@@ -1,7 +1,11 @@
-import type {WebStoryPage,} from '~/src/helpers/types.ts'
+import type {
+    WebStoryPage,
+} from '~/src/helpers/types.ts'
 
 import type {MarvelMoviesFandomTimelineEntry} from '~/src/helpers/node/movies-fandom-timeline.ts'
-import {breakEntryTextIntoSentences,} from '~/src/helpers/node/movies-fandom-timeline.ts'
+import {
+    breakEntryTextIntoSentences,
+} from '~/src/helpers/node/movies-fandom-timeline.ts'
 
 // https://stackoverflow.com/a/55435856/1397641
 function* chunk(arr: Array<any>, n: number, characterLimit = Number.POSITIVE_INFINITY) {

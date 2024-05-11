@@ -1,5 +1,5 @@
-import {get as GET} from '~/src/pages/api/tmdb-image/[...slug]'
+import {get} from '~/src/pages/api/tmdb-image/[...slug]'
 
 export const prerender = false
 
-export {GET}
+export {get}
