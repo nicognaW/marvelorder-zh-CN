@@ -3,9 +3,9 @@
     "type": "module",
     "version": "0.0.1",
     "private": true,
-    "packageManager": "pnpm@8.6.12",
+    "packageManager": "pnpm@9.1.0",
     "engines": {
-        "pnpm": "^8.6.*",
+        "pnpm": "9.1.0",
         "node": ">=18",
         "yarn": "forbidden, this project uses pnpm",
         "npm": "forbidden, this project uses pnpm"
