@@ -46,24 +46,24 @@
         </ButtonLink>
 
         <h2 id="description" class="font-bold">
-            Description
+            描述
         </h2>
         <div class="content-description">
             {{ mappedListing.overview }}
         </div>
 
         <div class="credits opacity-50">
-            <div>Title data via <a class="underline" href="https://www.themoviedb.org/">The Movie Database</a></div>
+            <div>数据取自 <a class="underline" href="https://www.themoviedb.org/">The Movie Database</a></div>
             <div
                 v-if="hasFanartLogo(mappedListing)"
             >
-                Image via <a class="underline" href="https://fanart.tv/">Fanart.tv</a>
+                图片取自 <a class="underline" href="https://fanart.tv/">Fanart.tv</a>
             </div>
 
             <div
                 v-if="isMcuSheetOrdered(mappedListing)"
             >
-                Timeline Order data via <a class="underline"
+                时间顺序取自 <a class="underline"
                                            href="https://docs.google.com/spreadsheets/d/1Xfe--9Wshbb3ru0JplA2PnEwN7mVawazKmhWJjr_wKs/edit#gid=0">r/MarvelStudios
                 MCU Viewing</a>
             </div>
@@ -148,12 +148,12 @@ export default {
             return [
                 {
                     enabled: this.context !== 'listing-page',
-                    label: 'Full details',
+                    label: '查看详情',
                     href: this.mappedListing.endpoint,
                 },
                 {
                     enabled: true,
-                    label: 'Edit on GitHub',
+                    label: '查看源代码',
                     href: this.mappedListing.githubEditUrl,
                 },
             ]
