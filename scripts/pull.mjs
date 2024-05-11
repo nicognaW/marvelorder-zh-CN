@@ -111,9 +111,6 @@ async function fetchListings({
             }
 
             const title = result.original_name || result.original_title
-            if (title === undefined) {
-                console.log(`original title not found for: ${JSON.stringify(result)}`)
-            }
             const slug = makeSlug(title)
 
             fetchedListings[result.id] = {

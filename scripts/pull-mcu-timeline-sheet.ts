@@ -230,7 +230,7 @@ function buildReadmeList(matchesMap: Map<number, any>) {
 
     const updatedList = buildReadmeList(matches)
 
-    console.log('updatedList', updatedList)
+    // console.log('updatedList', updatedList)
 
     await updateReadmeListContent(updatedList, 'viewing-order-list')
 
