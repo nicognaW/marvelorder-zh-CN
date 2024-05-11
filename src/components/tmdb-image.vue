@@ -17,11 +17,10 @@ import {
 import 'lazysizes/plugins/attrchange/ls.attrchange'
 
 function makeSizedImageUrl(imageUrl, size) {
-    const sizeUrl = new URL(imageUrl, 'https://example.com')
+    const sizeUrl = new URL(imageUrl, 'https://marvelorder.com')
 
     sizeUrl.searchParams.set('width', size)
-
-    return `${sizeUrl.pathname}${sizeUrl.search}`
+    return `${sizeUrl.href}${sizeUrl.search}`
 }
 
 export default {

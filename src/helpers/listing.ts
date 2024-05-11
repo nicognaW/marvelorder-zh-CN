@@ -119,5 +119,5 @@ export function makeTmdbImageUrl(tmdbImagePath = '', params = {}) {
         sizeUrl.searchParams.set(key, String(value))
     }
 
-    return `${sizeUrl.pathname}${sizeUrl.search}`
+    return `${sizeUrl.href}${sizeUrl.search}`
 }
