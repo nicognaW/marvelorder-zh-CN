@@ -36,43 +36,43 @@ module.exports = {
     ],
     rules: {
         // Indent with 4 spaces
-        'indent': [ 'error', 4, {
+        'indent': ['error', 4, {
             SwitchCase: 1,
-        } ],
+        }],
 
-        'jsonc/indent': [ 'error', 4 ],
+        'jsonc/indent': ['error', 4],
 
-        'vue/html-indent': [ 'error', 4 ],
+        'vue/html-indent': ['error', 4],
 
-        'vue/component-tags-order': [ 'error', {
-            order: [ 'template', 'script', 'style' ],
-        } ],
+        'vue/component-tags-order': ['error', {
+            order: ['template', 'script', 'style'],
+        }],
 
         // Typescript Indent
-        '@typescript-eslint/indent': [ 'error', 4 ],
+        '@typescript-eslint/indent': ['error', 4],
 
-        'space-in-parens': [ 'error', 'always' ],
+        'space-in-parens': ['error', 'always'],
 
-        'space-before-function-paren': [ 'error', 'always' ],
+        'space-before-function-paren': ['error', 'always'],
 
-        '@typescript-eslint/space-before-function-paren': [ 'error', 'always' ],
+        '@typescript-eslint/space-before-function-paren': ['error', 'always'],
 
-        'object-curly-spacing': [ 'error', 'always' ],
+        'object-curly-spacing': ['error', 'always'],
 
-        'array-bracket-spacing': [ 'error', 'always' ],
+        'array-bracket-spacing': ['error', 'always'],
 
-        'computed-property-spacing': [ 'error', 'always' ],
+        'computed-property-spacing': ['error', 'always'],
 
-        'template-curly-spacing': [ 'error', 'always' ],
+        'template-curly-spacing': ['error', 'always'],
 
         // Enforce curly braces for all control statements
-        'curly': [ 'error', 'all' ],
+        'curly': ['error', 'all'],
 
-        'quotes': [ 'error', 'single' ],
+        'quotes': ['error', 'single'],
 
         // Disable semicolons
         'semi': 'off',
-        '@typescript-eslint/semi': [ 'error', 'never' ],
+        '@typescript-eslint/semi': ['error', 'never'],
 
         'import/extensions': 0,
     },

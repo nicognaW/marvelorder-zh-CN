@@ -4,10 +4,10 @@ import {
     ensureFiltersHaveStories,
 } from '~/src/helpers/node/markdown-files.ts'
 
-;
+    ;
 
-( async () => {
+(async () => {
     await ensureFiltersHaveStories()
 
     process.exit()
-} )()
+})()

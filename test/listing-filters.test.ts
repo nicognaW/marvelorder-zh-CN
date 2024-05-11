@@ -1,8 +1,8 @@
 // https://vitest.dev/api/
-import { expect, test } from 'vitest'
-import { faker } from '@faker-js/faker'
+import {expect, test} from 'vitest'
+import {faker} from '@faker-js/faker'
 
-import { FilteredListings, ListingFilters } from '~/src/helpers/listing-filters.ts'
+import {FilteredListings, ListingFilters} from '~/src/helpers/listing-filters.ts'
 import {
     makeMappedListings,
 } from '~/src/helpers/node/listing.ts'
@@ -16,167 +16,167 @@ import {
     getMissingFilterStories,
     makeFilterMarkdownContent,
 } from '~/src/helpers/node/markdown-files.ts'
-import type { Filter } from '~/src/helpers/types'
+import type {Filter} from '~/src/helpers/types'
 
 const fakeListing = {
     title: faker.lorem.sentence(),
     overview: faker.lorem.paragraph(),
     backdrop_path: faker.image.imageUrl(),
-    genre_ids: [ 1, 2, 3 ],
+    genre_ids: [1, 2, 3],
     id: faker.datatype.number(),
-    origin_country: [ faker.address.countryCode() ],
+    origin_country: [faker.address.countryCode()],
     original_language: faker.address.countryCode(),
     popularity: faker.datatype.number(),
     poster_path: faker.image.imageUrl(),
     slug: faker.lorem.slug(),
-    tags: [ faker.lorem.word(), faker.lorem.word() ],
+    tags: [faker.lorem.word(), faker.lorem.word()],
 }
 
-test( 'Can filter out docs by default', () => {
+test('Can filter out docs by default', () => {
     const apiListings = [
         fakeListing,
-        { ...fakeListing, tags: [ 'doc' ] },
+        {...fakeListing, tags: ['doc']},
     ]
 
-    const mappedListings = makeMappedListings( apiListings )
+    const mappedListings = makeMappedListings(apiListings)
 
     const listingFilters = new ListingFilters()
 
-    const filteredListings = listingFilters.filter( mappedListings )
+    const filteredListings = listingFilters.filter(mappedListings)
 
-    expect( filteredListings ).toHaveLength( 1 )
+    expect(filteredListings).toHaveLength(1)
 
     // https://vitest.dev/api/#tocontain
-    expect( filteredListings[ 0 ] ).not.toContain( { tags: [ 'doc' ] } )
-} )
+    expect(filteredListings[0]).not.toContain({tags: ['doc']})
+})
 
-test( 'Can filter out docs from FilteredListings by default', () => {
+test('Can filter out docs from FilteredListings by default', () => {
     const apiListings = [
         fakeListing,
-        { ...fakeListing, tags: [ 'doc' ] },
+        {...fakeListing, tags: ['doc']},
     ]
 
-    const mappedListings = makeMappedListings( apiListings )
+    const mappedListings = makeMappedListings(apiListings)
 
-    const filteredListings = new FilteredListings( { listings: mappedListings, listingsSort: 'none' } )
+    const filteredListings = new FilteredListings({listings: mappedListings, listingsSort: 'none'})
 
-    expect( filteredListings.list ).toHaveLength( 1 )
+    expect(filteredListings.list).toHaveLength(1)
 
     // https://vitest.dev/api/#tocontain
-    expect( filteredListings.first ).not.toContain( { tags: [ 'doc' ] } )
-} )
+    expect(filteredListings.first).not.toContain({tags: ['doc']})
+})
 
-test( 'Can match listings from slugs', async () => {
+test('Can match listings from slugs', async () => {
     // Match Phase Zero
-    const phaseZeroListings = await getListingsFromSlug( 'phase-zero' )
+    const phaseZeroListings = await getListingsFromSlug('phase-zero')
 
     // Check that list is not empty
-    expect( phaseZeroListings.length ).toBeGreaterThan( 0 )
+    expect(phaseZeroListings.length).toBeGreaterThan(0)
 
     // console.log( 'phaseZeroListings', phaseZeroListings[0].title )
 
     // Check that list does not contain Iron Man from 2008
-    expect( phaseZeroListings ).toEqual(
-        expect.arrayContaining( [
+    expect(phaseZeroListings).toEqual(
+        expect.arrayContaining([
             // Iron Man 2008
-            expect.not.objectContaining( {
+            expect.not.objectContaining({
                 year: 2008,
-            } ),
+            }),
 
             // Probably Fantastic Four: Rise of the Silver Surfer
-            expect.objectContaining( {
-                title: expect.stringContaining( 'Fantastic Four' ),
+            expect.objectContaining({
+                title: expect.stringContaining('Fantastic Four'),
                 year: 2007,
-            } ),
+            }),
 
             // Blade
-            expect.objectContaining( {
+            expect.objectContaining({
                 title: 'Blade',
-            } ),
-        ] ),
+            }),
+        ]),
     )
 
     // Match MCU
-    const mcuListings = await getListingsFromSlug( 'mcu' )
+    const mcuListings = await getListingsFromSlug('mcu')
 
     // console.log('mcuListings', mcuListings[ 25 ].year )
 
     // Check that list is not empty
-    expect( mcuListings.length ).toBeGreaterThan( 0 )
+    expect(mcuListings.length).toBeGreaterThan(0)
 
     // Check that list does not contain Iron Man from 2008
-    expect( mcuListings ).toEqual(
-        expect.arrayContaining( [
+    expect(mcuListings).toEqual(
+        expect.arrayContaining([
             // Probably Fantastic Four: Rise of the Silver Surfer
-            expect.not.objectContaining( {
+            expect.not.objectContaining({
                 year: 2007,
-            } ),
+            }),
 
             // Iron Man 2008
-            expect.objectContaining( {
+            expect.objectContaining({
                 title: 'Iron Man',
                 year: 2008,
-            } ),
+            }),
 
             // Infinity War
-            expect.objectContaining( {
-                title: expect.stringContaining( 'Infinity War' ),
+            expect.objectContaining({
+                title: expect.stringContaining('Infinity War'),
                 year: 2018,
-            } ),
-        ] ),
+            }),
+        ]),
     )
-} )
+})
 
-test( 'Can list all filters', () => {
+test('Can list all filters', () => {
     const filters = getAllFilters()
 
     // console.log( 'filters', filters )
 
     // https://vitest.dev/api/#tocontain
-    expect( filters ).not.toHaveLength( 0 )
+    expect(filters).not.toHaveLength(0)
 
     // Expected filters
-    expect( filters ).toEqual(
-        expect.arrayContaining( [
+    expect(filters).toEqual(
+        expect.arrayContaining([
 
             // Expect a filter with the exportName isMultiverseSaga
-            expect.objectContaining( {
+            expect.objectContaining({
                 exportName: 'isMultiverseSaga',
-            } ),
+            }),
 
             // Expect a filter with the slug infinity-saga
-            expect.objectContaining( {
+            expect.objectContaining({
                 slug: 'infinity-saga',
-            } ),
+            }),
 
             // Expect a filter with the name 'Marvel Knights Animated'
-            expect.objectContaining( {
+            expect.objectContaining({
                 name: 'Marvel Knights Animated',
-            } ),
-        ] ),
+            }),
+        ]),
     )
 
-    const nonFilterExportNames = new Set( [
+    const nonFilterExportNames = new Set([
         'matchesFilters',
         'defaultFilters',
         'ListingFilters',
         'FilteredListings',
         // 'isMarvelKnightsAnimated',
-    ] )
+    ])
 
-    for ( const exportName of nonFilterExportNames ) {
+    for (const exportName of nonFilterExportNames) {
         // Exoected filters not to be found
-        expect( filters ).not.toEqual(
-            expect.arrayContaining( [
-                expect.objectContaining( {
+        expect(filters).not.toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
                     exportName,
-                } ),
-            ] ),
+                }),
+            ]),
         )
     }
-} )
+})
 
-test( 'Can match missing story pages', () => {
+test('Can match missing story pages', () => {
     const expectedMissingFilters: Filter[] = [
         {
             exportName: 'isMarvelKnightsAnimated',
@@ -242,32 +242,32 @@ test( 'Can match missing story pages', () => {
         ...expectedMissingFilters,
     ]
 
-    const missingFilters = getMissingFilterStories( existingFiles, inputFilters )
+    const missingFilters = getMissingFilterStories(existingFiles, inputFilters)
 
     // console.log( 'missingFilters', missingFilters )
 
     // Expected filters
-    expect( missingFilters ).toEqual( expectedMissingFilters )
-} )
+    expect(missingFilters).toEqual(expectedMissingFilters)
+})
 
-test( 'Can make markdown file content from filter', async () => {
+test('Can make markdown file content from filter', async () => {
     const filters = getAllFilters()
 
-    const markdownFilesContent = await Promise.all( filters.map( ( filter ) => {
-        return makeFilterMarkdownContent( filter )
-    } ) )
+    const markdownFilesContent = await Promise.all(filters.map((filter) => {
+        return makeFilterMarkdownContent(filter)
+    }))
 
     // console.log( 'markdownFilesContent', markdownFilesContent )
 
-    expect( markdownFilesContent ).toEqual(
-        expect.arrayContaining( [
-            expect.objectContaining( {
+    expect(markdownFilesContent).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({
 
-                frontmatter: expect.objectContaining( {
-                    title: expect.stringContaining( 'Every Marvel Film or Series that is Marvel Knights Animated' ),
-                } ),
+                frontmatter: expect.objectContaining({
+                    title: expect.stringContaining('Every Marvel Film or Series that is Marvel Knights Animated'),
+                }),
 
-            } ),
-        ] ),
+            }),
+        ]),
     )
-} )
+})

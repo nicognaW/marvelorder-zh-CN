@@ -1,45 +1,45 @@
-import type { FunctionalComponent } from 'preact'
-import { useEffect, useRef, useState } from 'preact/hooks'
+import type {FunctionalComponent} from 'preact'
+import {useEffect, useRef, useState} from 'preact/hooks'
 
-const TableOfContents: FunctionalComponent<{ headers: any[] }> = ( { headers = [] } ) => {
-    const itemOffsets = useRef( [] )
-    const [ activeId, setActiveId ] = useState<string>( undefined )
+const TableOfContents: FunctionalComponent<{ headers: any[] }> = ({headers = []}) => {
+    const itemOffsets = useRef([])
+    const [activeId, setActiveId] = useState<string>(undefined)
 
-    useEffect( () => {
+    useEffect(() => {
         const getItemOffsets = () => {
-            const titles = document.querySelectorAll( 'article :is(h1, h2, h3, h4)' )
-            itemOffsets.current = Array.from( titles ).map( title => ( {
+            const titles = document.querySelectorAll('article :is(h1, h2, h3, h4)')
+            itemOffsets.current = Array.from(titles).map(title => ({
                 id: title.id,
                 topOffset: title.getBoundingClientRect().top + window.scrollY,
-            } ) )
+            }))
         }
 
         getItemOffsets()
-        window.addEventListener( 'resize', getItemOffsets )
+        window.addEventListener('resize', getItemOffsets)
 
         return () => {
-            window.removeEventListener( 'resize', getItemOffsets )
+            window.removeEventListener('resize', getItemOffsets)
         }
-    }, [] )
+    }, [])
 
     return (
         <>
             <h2 class="heading">On this page</h2>
             <ul>
-                <li class={`header-link depth-2 ${ activeId === 'overview' ? 'active' : '' }`.trim()}>
+                <li class={`header-link depth-2 ${activeId === 'overview' ? 'active' : ''}`.trim()}>
                     <a href="#overview">Overview</a>
                 </li>
                 {headers
-                    .filter( ( { depth } ) => depth > 1 && depth < 4 )
-                    .map( header => (
+                    .filter(({depth}) => depth > 1 && depth < 4)
+                    .map(header => (
                         <li
-                            class={`header-link depth-${ header.depth } ${
+                            class={`header-link depth-${header.depth} ${
                                 activeId === header.slug ? 'active' : ''
                             }`.trim()}
                         >
-                            <a href={`#${ header.slug }`}>{header.text}</a>
+                            <a href={`#${header.slug}`}>{header.text}</a>
                         </li>
-                    ) )}
+                    ))}
             </ul>
         </>
     )

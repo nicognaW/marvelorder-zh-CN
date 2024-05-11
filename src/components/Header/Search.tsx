@@ -1,5 +1,5 @@
 /* jsxImportSource: react */
-import { useCallback, useRef, useState } from 'react'
+import {useCallback, useRef, useState} from 'react'
 import * as CONFIG from '../../config'
 import '@docsearch/css/dist/style.css'
 import './Search.css'
@@ -8,41 +8,41 @@ import './Search.css'
 import * as docSearchReact from '@docsearch/react'
 
 // @ts-expect-error
-import { createPortal } from 'react-dom'
+import {createPortal} from 'react-dom'
 
-export default function Search () {
+export default function Search() {
     const DocSearchModal = docSearchReact.DocSearchModal || docSearchReact.default.DocSearchModal
 
     const useDocSearchKeyboardEvents
-		= docSearchReact.useDocSearchKeyboardEvents || docSearchReact.default.useDocSearchKeyboardEvents
+        = docSearchReact.useDocSearchKeyboardEvents || docSearchReact.default.useDocSearchKeyboardEvents
 
-    const [ isOpen, setIsOpen ] = useState( false )
+    const [isOpen, setIsOpen] = useState(false)
     const searchButtonRef = useRef()
-    const [ initialQuery, setInitialQuery ] = useState( null )
+    const [initialQuery, setInitialQuery] = useState(null)
 
-    const onOpen = useCallback( () => {
-        setIsOpen( true )
-    }, [ setIsOpen ] )
+    const onOpen = useCallback(() => {
+        setIsOpen(true)
+    }, [setIsOpen])
 
-    const onClose = useCallback( () => {
-        setIsOpen( false )
-    }, [ setIsOpen ] )
+    const onClose = useCallback(() => {
+        setIsOpen(false)
+    }, [setIsOpen])
 
     const onInput = useCallback(
-        ( e ) => {
-            setIsOpen( true )
-            setInitialQuery( e.key )
+        (e) => {
+            setIsOpen(true)
+            setInitialQuery(e.key)
         },
-        [ setIsOpen, setInitialQuery ],
+        [setIsOpen, setInitialQuery],
     )
 
-    useDocSearchKeyboardEvents( {
+    useDocSearchKeyboardEvents({
         isOpen,
         onOpen,
         onClose,
         onInput,
         searchButtonRef,
-    } )
+    })
 
     return (
         <>
@@ -69,30 +69,30 @@ export default function Search () {
             </button>
 
             {isOpen
-				&& createPortal(
-				    <DocSearchModal
-				        initialQuery={initialQuery}
-				        initialScrollY={window.scrollY}
-				        onClose={onClose}
-				        indexName={( CONFIG as any ).ALGOLIA.indexName}
-				        appId={( CONFIG as any ).ALGOLIA.appId}
-				        apiKey={( CONFIG as any ).ALGOLIA.apiKey}
-				        transformItems={( items ) => {
-				            return items.map( ( item ) => {
-				                // We transform the absolute URL into a relative URL to
-				                // work better on localhost, preview URLS.
-				                const a = document.createElement( 'a' )
-				                a.href = item.url
-				                const hash = a.hash === '#overview' ? '' : a.hash
-				                return {
-				                    ...item,
-				                    url: `${ a.pathname }${ hash }`,
-				                }
-				            } )
-				        }}
-				    />,
-				    document.body,
-				)}
+                && createPortal(
+                    <DocSearchModal
+                        initialQuery={initialQuery}
+                        initialScrollY={window.scrollY}
+                        onClose={onClose}
+                        indexName={(CONFIG as any).ALGOLIA.indexName}
+                        appId={(CONFIG as any).ALGOLIA.appId}
+                        apiKey={(CONFIG as any).ALGOLIA.apiKey}
+                        transformItems={(items) => {
+                            return items.map((item) => {
+                                // We transform the absolute URL into a relative URL to
+                                // work better on localhost, preview URLS.
+                                const a = document.createElement('a')
+                                a.href = item.url
+                                const hash = a.hash === '#overview' ? '' : a.hash
+                                return {
+                                    ...item,
+                                    url: `${a.pathname}${hash}`,
+                                }
+                            })
+                        }}
+                    />,
+                    document.body,
+                )}
         </>
     )
 }

@@ -1,20 +1,20 @@
-<template />
+<template/>
 
 <script>
 import 'lazysizes/plugins/attrchange/ls.attrchange'
 
-function makeSizedImageUrl ( imageUrl, size ) {
-    const sizeUrl = new URL( imageUrl, 'https://example.com' )
+function makeSizedImageUrl(imageUrl, size) {
+    const sizeUrl = new URL(imageUrl, 'https://example.com')
 
-    sizeUrl.searchParams.set( 'width', size )
+    sizeUrl.searchParams.set('width', size)
 
-    return `${ sizeUrl.pathname }${ sizeUrl.search }`
+    return `${sizeUrl.pathname}${sizeUrl.search}`
 }
 
 export default {
     props: {
         src: {
-            type: [ String, Object ],
+            type: [String, Object],
             required: true,
         },
         alt: {
@@ -27,33 +27,33 @@ export default {
         },
         sizes: {
             type: Array,
-            default: () => [ 1, 1.5, 2, 4, 5, 8 ],
+            default: () => [1, 1.5, 2, 4, 5, 8],
         },
     },
     computed: {
-        maxWidth () {
-            return this.sizes[ this.sizes.length - 1 ]
+        maxWidth() {
+            return this.sizes[this.sizes.length - 1]
         },
-        logoUrl () {
-            if ( this.src?.logo_on_black ) {
+        logoUrl() {
+            if (this.src?.logo_on_black) {
                 return this.src.logo_on_black
             }
 
             return this.src
         },
-        srcSet () {
+        srcSet() {
             const srcSet = []
 
-            for ( const size of this.sizes ) {
-                const pixelWidth = Math.round( this.baseSize * size )
+            for (const size of this.sizes) {
+                const pixelWidth = Math.round(this.baseSize * size)
 
-                srcSet.push( `${ makeSizedImageUrl( this.logoUrl, pixelWidth ) } ${ size }x` )
+                srcSet.push(`${makeSizedImageUrl(this.logoUrl, pixelWidth)} ${size}x`)
             }
 
-            return srcSet.join( ', ' )
+            return srcSet.join(', ')
         },
-        srcImage () {
-            return makeSizedImageUrl( this.logoUrl, this.sizes[ 1 ] )
+        srcImage() {
+            return makeSizedImageUrl(this.logoUrl, this.sizes[1])
         },
     },
 }

@@ -1,5 +1,5 @@
 module.exports = {
-    content: [ './src/**/*.{astro,html,js,jsx,md,svelte,ts,tsx,vue}' ],
+    content: ['./src/**/*.{astro,html,js,jsx,md,svelte,ts,tsx,vue}'],
     theme: {
         extend: {
             zIndex: {
@@ -8,5 +8,5 @@ module.exports = {
             },
         },
     },
-    plugins: [ require( 'daisyui' ) ],
+    plugins: [require('daisyui')],
 }

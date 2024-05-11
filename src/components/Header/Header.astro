@@ -11,8 +11,8 @@ import CircleButton from '~/src/components/circle-button.vue'
 // const { currentPage } = Astro.props;
 // const lang = currentPage && getLanguageFromURL(currentPage)
 
-const lists = await Astro.glob( '/src/pages/zh/lists/*.md' )
-const stories = await Astro.glob( '/src/pages/stories/*.md' )
+const lists = await Astro.glob('/src/pages/zh/lists/*.md')
+const stories = await Astro.glob('/src/pages/stories/*.md')
 
 const pages = [
     ...lists,
@@ -21,10 +21,10 @@ const pages = [
 
 // console.log( 'lists', lists.map( l => l.url ) )
 
-const listsByUrl = Object.fromEntries( pages.map( l => [ l.url, l ] ) )
+const listsByUrl = Object.fromEntries(pages.map(l => [l.url, l]))
 
-function menuItemFromUrl( url, label = null ) {
-    const list = listsByUrl[ url ]
+function menuItemFromUrl(url, label = null) {
+    const list = listsByUrl[url]
 
     // console.log( 'list', list )
 
@@ -65,28 +65,28 @@ const navItems = [
             //     url: '/marvel-cinematic-universe-in-timeline-order',
             // },
 
-            menuItemFromUrl( '/zh/lists/infinity-saga', '💎 无限传奇' ),
+            menuItemFromUrl('/zh/lists/infinity-saga', '💎 无限传奇'),
 
-            menuItemFromUrl( '/zh/lists/phase-one', '1️⃣ 第一阶段' ),
-            menuItemFromUrl( '/zh/lists/phase-two', '2️⃣ 第二阶段' ),
-            menuItemFromUrl( '/zh/lists/phase-three', '3️⃣ 第三阶段' ),
+            menuItemFromUrl('/zh/lists/phase-one', '1️⃣ 第一阶段'),
+            menuItemFromUrl('/zh/lists/phase-two', '2️⃣ 第二阶段'),
+            menuItemFromUrl('/zh/lists/phase-three', '3️⃣ 第三阶段'),
 
 
-            menuItemFromUrl( '/zh/lists/multiverse-saga', '🌌 多元宇宙传奇' ),
+            menuItemFromUrl('/zh/lists/multiverse-saga', '🌌 多元宇宙传奇'),
 
-            menuItemFromUrl( '/zh/lists/phase-four', '4️⃣ 第四阶段' ),
-            menuItemFromUrl( '/zh/lists/phase-five', '5️⃣ 第五阶段' ),
-            menuItemFromUrl( '/zh/lists/phase-six', '6️⃣ 第六阶段' ),
+            menuItemFromUrl('/zh/lists/phase-four', '4️⃣ 第四阶段'),
+            menuItemFromUrl('/zh/lists/phase-five', '5️⃣ 第五阶段'),
+            menuItemFromUrl('/zh/lists/phase-six', '6️⃣ 第六阶段'),
 
-            menuItemFromUrl( '/zh/lists/wong-cinematic-universe', '🥋 王电影宇宙' ),
+            menuItemFromUrl('/zh/lists/wong-cinematic-universe', '🥋 王电影宇宙'),
         ]
     },
     {
         name: 'Stories',
         items: [
-            menuItemFromUrl( '/stories/kang-anthology', '👑 征服者康精选' ),
+            menuItemFromUrl('/stories/kang-anthology', '👑 征服者康精选'),
 
-            menuItemFromUrl( '/stories/wakanda-anthology', '🙅🏾‍♀️ 瓦坎达精选' ),
+            menuItemFromUrl('/stories/wakanda-anthology', '🙅🏾‍♀️ 瓦坎达精选'),
             {
                 "name": "🏰 D23 漫威发布会上的所有公告",
                 "description": "D23 博览会上漫威发布会的所有公告详情",
@@ -113,10 +113,10 @@ const navItems = [
 ---
 
 <header class="fixed inset-x top-0 w-full">
-	<SkipToContent />
+    <SkipToContent/>
 
-	<div class="nav-wrapper">
-		<!-- This example requires Tailwind CSS v2.0+ -->
+    <div class="nav-wrapper">
+        <!-- This example requires Tailwind CSS v2.0+ -->
         <div class="z-0 relative w-full">
             <div class="fixed z-top-nav inset-x-0">
                 <div
@@ -126,7 +126,7 @@ const navItems = [
 
                     <div class="logo relative w-32 z-top-nav">
                         <a href="/">
-                            <h1>{ CONFIG.SITE.title }</h1>
+                            <h1>{CONFIG.SITE.title}</h1>
                         </a>
                     </div>
 
@@ -135,9 +135,9 @@ const navItems = [
 
                         <a
                             type="button"
-                            href={ `#${ menuId }` }
+                            href={`#${menuId}`}
                             class="relative text-gray-50/100 group bg-black/10 rounded-md inline-flex items-center text-base font-medium hover: focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            aria-expanded={ expanded }
+                            aria-expanded={expanded}
                         >
                             <span>列表</span>
                             <!--
@@ -145,58 +145,66 @@ const navItems = [
 
                                 Item active: "text-gray-600", Item inactive: "text-gray-400"
                                 -->
-                            <svg class="text-gray-400 ml-2 h-5 w-5 group-hover:text-gray-50/100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            <svg class="text-gray-400 ml-2 h-5 w-5 group-hover:text-gray-50/100"
+                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                 aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"/>
                             </svg>
                         </a>
 
                         <nav
-                            id={ menuId }
+                            id={menuId}
                             class="hidden absolute top-0 inset-0 h-screen target:block bg-black/10 backdrop-blur-xl"
                             aria-labelledby="main-menu-heading"
                         >
-                            <div class="columns-wrapper flex flex-col md:flex-row items-start h-screen overflow-scroll lower-mask gap-y-12 sm:gap-x-12 pb-72 px-4 pt-6 sm:px-6 lg:px-8 xl:pr-12">
+                            <div
+                                class="columns-wrapper flex flex-col md:flex-row items-start h-screen overflow-scroll lower-mask gap-y-12 sm:gap-x-12 pb-72 px-4 pt-6 sm:px-6 lg:px-8 xl:pr-12">
                                 <h2 id="main-menu-heading" class="sr-only">Main menu</h2>
 
-                                <div class="spacer w-32 mr-12" />
+                                <div class="spacer w-32 mr-12"/>
 
-                                { navItems.map( ( { name, items }, columnIndex ) => (
+                                {navItems.map(({name, items}, columnIndex) => (
                                     <div class="w-full">
                                         <a
                                             type="button"
                                             href='#'
                                             class="relative z-top-nav text-gray-50/100 group bg-black/10 rounded-md inline-flex items-center text-base font-medium hover: focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                            aria-expanded={ expanded }
+                                            aria-expanded={expanded}
                                         >
-                                            <h3>{ name }</h3>
+                                            <h3>{name}</h3>
 
-                                            { columnIndex === 0 && (
+                                            {columnIndex === 0 && (
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     class="text-gray-400 ml-2 h-5 w-5 group-hover:text-gray-50/100"
                                                     viewBox="0 0 20 20"
                                                     fill="currentColor"
                                                 >
-                                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                    <path fill-rule="evenodd"
+                                                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                          clip-rule="evenodd"/>
                                                 </svg>
                                             )}
                                         </a>
 
                                         <ul role="list" class="flex flex-col items-start gap-6 mt-5">
-                                            { items.map( ( { name, description, url } ) => (
+                                            {items.map(({name, description, url}) => (
                                                 <li class="flow-root">
-                                                    <a href={ url } class="p-3 flex flex-col items-start rounded-md hover:bg-gray-50/10 transition ease-in-out duration-150">
+                                                    <a href={url}
+                                                       class="p-3 flex flex-col items-start rounded-md hover:bg-gray-50/10 transition ease-in-out duration-150">
                                                         <!-- Heroicon name: outline/information-circle -->
-                                                        <div class="text-2xl font-medium">{ name }</div>
+                                                        <div class="text-2xl font-medium">{name}</div>
                                                         <div class="opacity-75">
-                                                            { description }
+                                                            {description}
                                                         </div>
                                                     </a>
                                                 </li>
-                                            ) ) }
+                                            ))}
                                         </ul>
                                     </div>
-                                ) ) }
+                                ))}
                             </div>
 
                             <CircleButton
@@ -204,8 +212,9 @@ const navItems = [
                                 href="#"
                                 class="close-button absolute bottom-24 left-1/2 transform-gpu -translate-x-1/2 translate-y-1/2"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
                             </CircleButton>
 
@@ -217,50 +226,53 @@ const navItems = [
 
 
         </div>
-	</div>
+    </div>
 </header>
 
 <style>
-	header {
-		z-index: 11;
-		/* height: var(--theme-navbar-height); */
-		width: 100%;
-		/* background-color: var(--theme-navbar-bg); */
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.nav-wrapper {
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		gap: 1em;
-		width: 100%;
-		/* max-width: 82em; */
-		padding: 0 1rem;
-	}
+    header {
+        z-index: 11;
+        /* height: var(--theme-navbar-height); */
+        width: 100%;
+        /* background-color: var(--theme-navbar-bg); */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-	/** Style Algolia */
-	:root {
-		--docsearch-primary-color: var(--theme-accent);
-		--docsearch-logo-color: var(--theme-text);
-	}
+    .nav-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 1em;
+        width: 100%;
+        /* max-width: 82em; */
+        padding: 0 1rem;
+    }
 
-	.search-item {
-		display: none;
-		position: relative;
-		z-index: 10;
-		flex-grow: 1;
-		padding-right: 0.7rem;
-		display: flex;
-		max-width: 200px;
-	}
-	:global(.search-item > *) {
-		flex-grow: 1;
-	}
-	@media (min-width: 50em) {
-		.search-item {
-			max-width: 400px;
-		}
-	}
+    /** Style Algolia */
+    :root {
+        --docsearch-primary-color: var(--theme-accent);
+        --docsearch-logo-color: var(--theme-text);
+    }
+
+    .search-item {
+        display: none;
+        position: relative;
+        z-index: 10;
+        flex-grow: 1;
+        padding-right: 0.7rem;
+        display: flex;
+        max-width: 200px;
+    }
+
+    :global(.search-item > *) {
+        flex-grow: 1;
+    }
+
+    @media (min-width: 50em) {
+        .search-item {
+            max-width: 400px;
+        }
+    }
 </style>

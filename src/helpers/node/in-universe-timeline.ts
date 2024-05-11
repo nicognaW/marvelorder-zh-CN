@@ -32,7 +32,7 @@ interface TitleText {
 }
 
 interface DisneyPlusRelease {
-    releaseDate: `${ number }-${ number }-${ number }`
+    releaseDate: `${number}-${number}-${number}`
     releaseOrg: null
     releaseType: 'original'
     releaseYear: number
@@ -64,22 +64,22 @@ interface DisneyPlusInUniverseEntry {
     type: 'series' | ProgramType
 }
 
-function mapCuratedSetItem ( item: DisneyPlusInUniverseItem ): DisneyPlusInUniverseEntry {
+function mapCuratedSetItem(item: DisneyPlusInUniverseItem): DisneyPlusInUniverseEntry {
     const isSeries = !!item?.seriesType
     const programOrSeries = isSeries ? 'series' : 'program'
     const titleObject = item.text.title
 
     return {
         contentId: item.contentId,
-        title: titleObject.full[ programOrSeries ].default.content,
-        slug: titleObject.slug[ programOrSeries ].default.content,
+        title: titleObject.full[programOrSeries].default.content,
+        slug: titleObject.slug[programOrSeries].default.content,
         releases: item.releases,
         seriesType: item?.seriesType,
         type: isSeries ? 'series' : item.programType,
     }
 }
 
-export async function getInUniverseTimeline (): Promise<DisneyPlusInUniverseEntry[]> {
+export async function getInUniverseTimeline(): Promise<DisneyPlusInUniverseEntry[]> {
     // console.log( 'DISNEY_API_PREFIX', process.env.DISNEY_API_PREFIX )
 
     let pageTotal = Number.POSITIVE_INFINITY
@@ -87,13 +87,13 @@ export async function getInUniverseTimeline (): Promise<DisneyPlusInUniverseEntr
 
     const allItems: DisneyPlusInUniverseEntry[] = []
 
-    while ( pageTotal > 0 ) {
-        const pageUrl = `${ process.env.DISNEY_API_PREFIX }${ inUniverseFirstPage.replace( '/page/1', `/page/${ pageIndex }` ) }`
-        const page = await axios( pageUrl ).then( res => res.data )
+    while (pageTotal > 0) {
+        const pageUrl = `${process.env.DISNEY_API_PREFIX}${inUniverseFirstPage.replace('/page/1', `/page/${pageIndex}`)}`
+        const page = await axios(pageUrl).then(res => res.data)
 
-        const items = page.data.CuratedSet.items.map( mapCuratedSetItem )
+        const items = page.data.CuratedSet.items.map(mapCuratedSetItem)
 
-        allItems.push( ...items )
+        allItems.push(...items)
 
         pageTotal = items.length
         pageIndex++
@@ -102,46 +102,46 @@ export async function getInUniverseTimeline (): Promise<DisneyPlusInUniverseEntr
     return allItems
 }
 
-export function matchListingToInUniverse ( listing, inUniverseEntry ) {
+export function matchListingToInUniverse(listing, inUniverseEntry) {
     // Skip if listing has no release date
-    if ( !listing.dateString ) {
+    if (!listing.dateString) {
         return false
     }
 
     // console.log( 'listing.dateString', listing.dateString )
     // console.log( 'inUniverseEntry.releases[0].releaseDate', inUniverseEntry.releases[0].releaseDate )
-    const dateMatches = getYearAndMonth( inUniverseEntry.releases[ 0 ].releaseDate ) === getYearAndMonth( listing.dateString )
+    const dateMatches = getYearAndMonth(inUniverseEntry.releases[0].releaseDate) === getYearAndMonth(listing.dateString)
 
-    if ( !dateMatches ) {
+    if (!dateMatches) {
         return false
     }
 
     const cleanInUniverseTitle = inUniverseEntry.title
         // Replace Trademark Symbols
-        .replaceAll( '™', '' )
+        .replaceAll('™', '')
 
-    const listingSlug = makeSlug( listing.title ).replace( 'marvel-one-shot', '' )
-    const inUniverseSlug = makeSlug( cleanInUniverseTitle )
+    const listingSlug = makeSlug(listing.title).replace('marvel-one-shot', '')
+    const inUniverseSlug = makeSlug(cleanInUniverseTitle)
 
     // console.log( 'listingSlug', listingSlug )
     // console.log( 'orderedSlug', inUniverseSlug )
 
     // We can be a bit more generous with the slug matching
     // since the listing are all in the same month and year
-    return inUniverseSlug.includes( listingSlug ) || listingSlug.includes( inUniverseSlug )
+    return inUniverseSlug.includes(listingSlug) || listingSlug.includes(inUniverseSlug)
 }
 
-export function matchTimelineEntryToSavedListing ( inUniverseEntry: any, savedListings: any[] ) {
-    for ( const savedListing of savedListings ) {
-        if ( matchListingToInUniverse( savedListing, inUniverseEntry ) ) {
+export function matchTimelineEntryToSavedListing(inUniverseEntry: any, savedListings: any[]) {
+    for (const savedListing of savedListings) {
+        if (matchListingToInUniverse(savedListing, inUniverseEntry)) {
             return savedListing
         }
     }
 
-    throw new Error( `Could not match timeline entry to saved listing: ${ inUniverseEntry.title }` )
+    throw new Error(`Could not match timeline entry to saved listing: ${inUniverseEntry.title}`)
 }
 
-const inUniverseFilters = new Map( [
+const inUniverseFilters = new Map([
     [
         isDoc,
         {
@@ -154,35 +154,35 @@ const inUniverseFilters = new Map( [
             targetValue: false,
         },
     ],
-] )
+])
 
-async function getInUniverseListings () {
+async function getInUniverseListings() {
     const rawListings = await getAllListings()
 
-    const inUniverseListings = new FilteredListings( {
+    const inUniverseListings = new FilteredListings({
         listings: rawListings,
         initialFilters: inUniverseFilters,
         useDefaultFilters: false,
         listingsSort: 'default',
-    } )
+    })
 
     return inUniverseListings.list
 }
 
-export async function getInUniverseTimelineAndListings () {
+export async function getInUniverseTimelineAndListings() {
     const universeTimeline = await getInUniverseTimeline()
     const savedListings = await getInUniverseListings()
 
     const matches = new Map()
 
-    for ( const inUniverseEntry of universeTimeline ) {
-        const matchingListing = matchTimelineEntryToSavedListing( inUniverseEntry, savedListings )
+    for (const inUniverseEntry of universeTimeline) {
+        const matchingListing = matchTimelineEntryToSavedListing(inUniverseEntry, savedListings)
 
-        matches.set( matchingListing.id, {
+        matches.set(matchingListing.id, {
             inUniverseEntry,
             mappedListing: matchingListing,
-        } )
+        })
     }
 
-    return Array.from( matches.values() )
+    return Array.from(matches.values())
 }

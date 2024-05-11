@@ -2,41 +2,41 @@ import type {
     WebStoryPage,
 } from '~/src/helpers/types.ts'
 
-import type { MarvelMoviesFandomTimelineEntry } from '~/src/helpers/node/movies-fandom-timeline.ts'
+import type {MarvelMoviesFandomTimelineEntry} from '~/src/helpers/node/movies-fandom-timeline.ts'
 import {
     breakEntryTextIntoSentences,
 } from '~/src/helpers/node/movies-fandom-timeline.ts'
 
 // https://stackoverflow.com/a/55435856/1397641
-function* chunk ( arr: Array<any>, n: number, characterLimit = Number.POSITIVE_INFINITY ) {
-    for ( let i = 0; i < arr.length; ) {
+function* chunk(arr: Array<any>, n: number, characterLimit = Number.POSITIVE_INFINITY) {
+    for (let i = 0; i < arr.length;) {
         // If the the next chunk is too long
         // then let it be by itself
-        if ( arr[ i ].length > characterLimit ) {
-            yield [ arr[ i ] ]
+        if (arr[i].length > characterLimit) {
+            yield [arr[i]]
             i += 1
             continue
         }
 
-        yield arr.slice( i, i + n )
+        yield arr.slice(i, i + n)
         i += n
     }
 }
 
-function buildWebStoryPagesFromTimelineEntry ( timelineEntry: MarvelMoviesFandomTimelineEntry ) {
+function buildWebStoryPagesFromTimelineEntry(timelineEntry: MarvelMoviesFandomTimelineEntry) {
     const pagesFromEntry = []
 
     // console.log( 'timelineEntry.textContent', timelineEntry.textContent )
 
-    const sentences = breakEntryTextIntoSentences( timelineEntry.textContent )
+    const sentences = breakEntryTextIntoSentences(timelineEntry.textContent)
 
-    const sentencesChunks = chunk( sentences, 2, 120 )
+    const sentencesChunks = chunk(sentences, 2, 120)
 
     // console.log( 'textContentSegments', textContentSegments )
 
-    for ( const group of sentencesChunks ) {
+    for (const group of sentencesChunks) {
         const page: WebStoryPage = {
-            id: `page-${ timelineEntry.hash }`,
+            id: `page-${timelineEntry.hash}`,
             backgroundSrc: '',
             backgroundPoster: '',
             mediaAriaLabel: '',
@@ -62,7 +62,7 @@ function buildWebStoryPagesFromTimelineEntry ( timelineEntry: MarvelMoviesFandom
                         //     className: 'time-description'
                         // },
 
-                        ...group.map( ( sentence, index ) => {
+                        ...group.map((sentence, index) => {
                             return {
                                 text: sentence,
                                 tagName: 'p',
@@ -70,10 +70,10 @@ function buildWebStoryPagesFromTimelineEntry ( timelineEntry: MarvelMoviesFandom
                                     className: [
                                         'text-content text-lg w-64 bg-black/25 backdrop-blur-xl backdrop-saturate-200 inline whitespace-pre-line p-4',
                                         index % 2 === 0 ? '' : 'ml-auto',
-                                    ].join( ' ' ),
+                                    ].join(' '),
                                 },
                             }
-                        } ),
+                        }),
 
                         // Source link
                         {
@@ -90,18 +90,18 @@ function buildWebStoryPagesFromTimelineEntry ( timelineEntry: MarvelMoviesFandom
 
         }// End Page
 
-        pagesFromEntry.push( page )
+        pagesFromEntry.push(page)
     }
 
     return pagesFromEntry
 }
 
-export function buildWebStoryFromTimelineEntries ( timelineEntries: Array<MarvelMoviesFandomTimelineEntry> ) {
+export function buildWebStoryFromTimelineEntries(timelineEntries: Array<MarvelMoviesFandomTimelineEntry>) {
     const pages = []
 
-    for ( const entry of timelineEntries ) {
-        const pagesFromEntry = buildWebStoryPagesFromTimelineEntry( entry )
-        pages.push( ...pagesFromEntry )
+    for (const entry of timelineEntries) {
+        const pagesFromEntry = buildWebStoryPagesFromTimelineEntry(entry)
+        pages.push(...pagesFromEntry)
     }
 
     return {

@@ -84,13 +84,13 @@ export const TMDB_LISTS = [
         // https://www.themoviedb.org/list/8204862
         name: 'Classic Marvel Movies',
         id: '8204862',
-        tags: [ 'classic' ],
+        tags: ['classic'],
     },
     {
         // https://www.themoviedb.org/list/8204860
         name: 'X-Men Movies',
         id: '8204860',
-        tags: [ 'x-men' ],
+        tags: ['x-men'],
     },
 ]
 
@@ -101,6 +101,6 @@ export const TMDB_COLLECTTIONS = [
         // https://www.themoviedb.org/movie/36657-x-men
         name: 'X-Men',
         id: '36657',
-        tags: [ 'x-men' ],
+        tags: ['x-men'],
     },
 ]

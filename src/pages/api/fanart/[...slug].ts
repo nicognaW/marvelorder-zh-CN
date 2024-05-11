@@ -5,7 +5,7 @@ import etag from 'etag'
 import isSvg from 'is-svg'
 import sizeOf from 'image-size'
 
-import type { APIRoute } from 'astro'
+import type {APIRoute} from 'astro'
 
 export const prerender = false
 
@@ -16,24 +16,24 @@ const splitPoint = '/fanart/'
 // 6MB is hard max Lambda response size
 const MAX_RESPONSE_SIZE = 6291456
 
-const IGNORED_FORMATS = new Set( [
+const IGNORED_FORMATS = new Set([
     'svg',
     'gif',
-] )
-const OUTPUT_FORMATS = new Set( [
+])
+const OUTPUT_FORMATS = new Set([
     'png',
     'jpg',
     'webp',
     'avif',
-] )
+])
 
-function getImageType ( buffer ) {
-    const type = getImageTypeFromBuffer( buffer )
-    if ( type ) {
+function getImageType(buffer) {
+    const type = getImageTypeFromBuffer(buffer)
+    if (type) {
         return type
     }
-    if ( isSvg( buffer ) ) {
-        return { ext: 'svg', mime: 'image/svg' }
+    if (isSvg(buffer)) {
+        return {ext: 'svg', mime: 'image/svg'}
     }
     return null
 }
@@ -47,8 +47,8 @@ interface RequestOptions {
     requestExtension: string
 }
 
-function getOptions ( eventUrlString ): RequestOptions {
-    const eventUrl = new URL( eventUrlString, process.env.URL )
+function getOptions(eventUrlString): RequestOptions {
+    const eventUrl = new URL(eventUrlString, process.env.URL)
 
     // console.log('searchParams', Object.fromEntries( eventUrl.searchParams ))
 
@@ -58,28 +58,28 @@ function getOptions ( eventUrlString ): RequestOptions {
         'crop.top': cropTop = 0,
         'crop.bottom': cropBottom = 0,
         // format = null,
-    } = Object.fromEntries( eventUrl.searchParams )
+    } = Object.fromEntries(eventUrl.searchParams)
 
-    const width = Number( widthParam )
+    const width = Number(widthParam)
 
-    if ( !width ) {
-        throw new Error( 'Width is not a number' )
+    if (!width) {
+        throw new Error('Width is not a number')
     }
 
     const quality = 95// parseInt(q) || 60
 
-    const imagePath = eventUrl.pathname.split( splitPoint )[ 1 ]
+    const imagePath = eventUrl.pathname.split(splitPoint)[1]
 
-    const contentUrl = `${ base_url }/${ imagePath }`
+    const contentUrl = `${base_url}/${imagePath}`
 
     // Just always assume it's a jpg source
-    const requestExtension = imagePath.split( /[#?]/ )[ 0 ].split( '.' ).pop().trim()
+    const requestExtension = imagePath.split(/[#?]/)[0].split('.').pop().trim()
 
     return {
         width,
         quality,
-        cropTop: Number( cropTop ),
-        cropBottom: Number( cropBottom ),
+        cropTop: Number(cropTop),
+        cropBottom: Number(cropBottom),
         contentUrl,
         requestExtension,
         // format,
@@ -88,15 +88,14 @@ function getOptions ( eventUrlString ): RequestOptions {
 
 // Example URL
 // https://marvelorder-full-static.netlify.app/.netlify/functions/wp-image/marvelorderstaging.wpengine.com/2021/11/Chamber-1-V2.jpg?w=800&q=80&format
-export async function handler ( event ) {
+export async function handler(event) {
     let options: RequestOptions
 
     // Parse and validate options
     try {
-        options = getOptions( event.url.href )
-    }
-    catch ( error ) {
-        console.error( 'Invalid image options', error )
+        options = getOptions(event.url.href)
+    } catch (error) {
+        console.error('Invalid image options', error)
 
         return {
             statusCode: 400,
@@ -117,22 +116,22 @@ export async function handler ( event ) {
 
     // Move Request Extension to the start of the list
     // so that it is the first to be tried
-    const imageTypes = new Set( [
+    const imageTypes = new Set([
         // Start with the most likely
         'png',
         requestExtension,
         ...OUTPUT_FORMATS,
-    ] )
+    ])
 
     // Run through image types until we find one that works
-    for ( const imageType of imageTypes ) {
-        const typeUrl = contentUrl.replace( `.${ requestExtension }`, `.${ imageType }` )
+    for (const imageType of imageTypes) {
+        const typeUrl = contentUrl.replace(`.${requestExtension}`, `.${imageType}`)
 
         // Fetch our image
-        sourceImage = await fetch( typeUrl )
+        sourceImage = await fetch(typeUrl)
 
         // If we got a 200, we're good
-        if ( sourceImage.status === 200 ) {
+        if (sourceImage.status === 200) {
             break
         }
 
@@ -140,8 +139,8 @@ export async function handler ( event ) {
     }
 
     // If we don't have an image, we're done
-    if ( !sourceImage.ok ) {
-        console.error( `Failed to download image ${ contentUrl }. Status ${ sourceImage.status } ${ sourceImage.statusText }` )
+    if (!sourceImage.ok) {
+        console.error(`Failed to download image ${contentUrl}. Status ${sourceImage.status} ${sourceImage.statusText}`)
         return {
             statusCode: sourceImage.status,
             body: sourceImage.statusText,
@@ -150,16 +149,16 @@ export async function handler ( event ) {
 
     let workingBuffer = await sourceImage.buffer()
 
-    const sourceType = getImageType( workingBuffer )
+    const sourceType = getImageType(workingBuffer)
 
-    if ( !sourceType ) {
-        return { statusCode: 400, body: 'Source does not appear to be an image' }
+    if (!sourceType) {
+        return {statusCode: 400, body: 'Source does not appear to be an image'}
     }
 
-    const { ext } = sourceType
+    const {ext} = sourceType
 
     // For unsupported formats (gif, svg) we redirect to the original
-    if ( IGNORED_FORMATS.has( ext ) ) {
+    if (IGNORED_FORMATS.has(ext)) {
         return {
             statusCode: 302,
             headers: {
@@ -168,39 +167,39 @@ export async function handler ( event ) {
         }
     }
 
-    const source = sizeOf( workingBuffer )
+    const source = sizeOf(workingBuffer)
 
     const extractOptions = {
         left: 0,
-        top: Math.round( cropTop * source.height ),
+        top: Math.round(cropTop * source.height),
         width: source.width,
-        height: Math.round( ( 1 - cropBottom ) * source.height - ( cropTop * source.height ) ),
+        height: Math.round((1 - cropBottom) * source.height - (cropTop * source.height)),
     }
 
     // If there is a crop, crop it
-    if ( cropTop > 0 || cropBottom > 0 ) {
-        workingBuffer = await sharp( workingBuffer )
-            .extract( extractOptions )
+    if (cropTop > 0 || cropBottom > 0) {
+        workingBuffer = await sharp(workingBuffer)
+            .extract(extractOptions)
             .toBuffer()
     }
 
     // Trim source image
-    workingBuffer = await sharp( workingBuffer )
-        .resize( width, null, { withoutEnlargement: true } )
+    workingBuffer = await sharp(workingBuffer)
+        .resize(width, null, {withoutEnlargement: true})
         .trim()
         .toBuffer()
 
     // The format methods are just to set options: they don't
     // make it return that format.
-    const { info, data: outputBuffer } = await sharp( workingBuffer )
+    const {info, data: outputBuffer} = await sharp(workingBuffer)
         .rotate()
         // .jpeg({ quality, force: requestExtension === 'jpg' })
         // .png({ quality, force: true })
-        .webp( { quality, force: true } )
+        .webp({quality, force: true})
         // .avif({ quality, force: requestExtension === 'avif' })
-        .toBuffer( { resolveWithObject: true } )
+        .toBuffer({resolveWithObject: true})
 
-    if ( outputBuffer.length > MAX_RESPONSE_SIZE ) {
+    if (outputBuffer.length > MAX_RESPONSE_SIZE) {
         return {
             statusCode: 400,
             body: 'Requested image is too large. Maximum size is 6MB.',
@@ -210,9 +209,9 @@ export async function handler ( event ) {
     return {
         statusCode: 200,
         headers: {
-            'Content-Type': `image/${ info.format }`,
+            'Content-Type': `image/${info.format}`,
             'Cache-Control': 'public, max-age=365000000, immutable',
-            'etag': etag( outputBuffer ),
+            'etag': etag(outputBuffer),
         },
         body: outputBuffer,
         isBase64Encoded: true,
@@ -221,7 +220,7 @@ export async function handler ( event ) {
 
 export default handler
 
-export const get: APIRoute = async ( context ) => {
+export const get: APIRoute = async (context) => {
     try {
         // console.log( { context } )
 
@@ -230,18 +229,17 @@ export const get: APIRoute = async ( context ) => {
             // cacheControl = 'public, max-age=31536000, immutable',
             headers = {},
             body,
-        } = await handler( context )
+        } = await handler(context)
 
-        return new Response( body, {
+        return new Response(body, {
             status: statusCode,
             headers,
-        } )
-    }
-    catch ( error ) {
-        console.warn( error )
+        })
+    } catch (error) {
+        console.warn(error)
 
-        return new Response( JSON.stringify( 'Error' ), {
+        return new Response(JSON.stringify('Error'), {
             status: 500,
-        } )
+        })
     }
 }

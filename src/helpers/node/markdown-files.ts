@@ -7,52 +7,52 @@ import {
     storiesGlobPattern,
 } from '~/src/config.ts'
 
-import type { Filter } from '~/src/helpers/types.ts'
-import { FilteredListings } from '~/src/helpers/listing-filters.ts'
+import type {Filter} from '~/src/helpers/types.ts'
+import {FilteredListings} from '~/src/helpers/listing-filters.ts'
 import {
     getAllFilters,
     getAllListings,
 } from '~/src/helpers/node/listing-files.ts'
 
-export async function getStoryFiles () {
-    return await glob( storiesGlobPattern )
+export async function getStoryFiles() {
+    return await glob(storiesGlobPattern)
 }
 
-export function getSlugFromStoryPath ( storyPath: string ) {
-    return storyPath.split( '/' ).pop().replace( '.md', '' )
+export function getSlugFromStoryPath(storyPath: string) {
+    return storyPath.split('/').pop().replace('.md', '')
 }
 
-export function getMissingFilterStories ( storyFilesGlob: string[], inputFilters: Filter[] ) {
-    const missingFilters = Object.fromEntries( inputFilters.map( filter => [ filter.slug, filter ] ) )
+export function getMissingFilterStories(storyFilesGlob: string[], inputFilters: Filter[]) {
+    const missingFilters = Object.fromEntries(inputFilters.map(filter => [filter.slug, filter]))
 
-    const fileSlugs = storyFilesGlob.map( getSlugFromStoryPath )
+    const fileSlugs = storyFilesGlob.map(getSlugFromStoryPath)
 
     // console.log( 'fileSlugs', fileSlugs )
 
     // Find and remove any filters that are in the fileSlugs
-    for ( const slug of fileSlugs ) {
-        if ( missingFilters[ slug ] ) {
-            delete missingFilters[ slug ]
+    for (const slug of fileSlugs) {
+        if (missingFilters[slug]) {
+            delete missingFilters[slug]
         }
     }
 
-    return Object.values( missingFilters )
+    return Object.values(missingFilters)
 }
 
-export async function makeFilterMarkdownContent ( filter: Filter ) {
-    const { name } = filter
+export async function makeFilterMarkdownContent(filter: Filter) {
+    const {name} = filter
 
-    const isName = name.includes( 'Has' ) ? name : `is ${ name }`
+    const isName = name.includes('Has') ? name : `is ${name}`
 
     // Make the filtered list of listings
-    const filteredListings = new FilteredListings( {
-        listings: ( await getAllListings() ),
+    const filteredListings = new FilteredListings({
+        listings: (await getAllListings()),
         initialFilters: [
-            [ filter.filter, true ],
+            [filter.filter, true],
         ],
         useDefaultFilters: false,
         listingsSort: 'default',
-    } )
+    })
 
     const listings = filteredListings.list
 
@@ -60,37 +60,37 @@ export async function makeFilterMarkdownContent ( filter: Filter ) {
 
     return {
         frontmatter: {
-            title: `Every Marvel Film or Series that ${ isName }`,
-            description: `The ${ listings.length } Marvel films or series that ${ isName }`,
+            title: `Every Marvel Film or Series that ${isName}`,
+            description: `The ${listings.length} Marvel films or series that ${isName}`,
             layout: '../../layouts/list-story.astro',
-            coverAriaLabel: listings[ 0 ].title,
+            coverAriaLabel: listings[0].title,
             // coverVideoUrl: https://vumbnail.com/G3-UkHQLTtw.mp4
-            coverPosterUrl: listings[ 0 ].backdrop() ? listings[ 0 ].backdrop() : avengersBackdrop,
+            coverPosterUrl: listings[0].backdrop() ? listings[0].backdrop() : avengersBackdrop,
         },
     }
 }
 
-export function makeStoryPathFromFilter ( filter: Filter ) {
-    const { slug } = filter
+export function makeStoryPathFromFilter(filter: Filter) {
+    const {slug} = filter
 
-    return `src/pages/stories/${ slug }.md`
+    return `src/pages/stories/${slug}.md`
 }
 
-export async function ensureFiltersHaveStories () {
+export async function ensureFiltersHaveStories() {
     const storyFiles = await getStoryFiles()
     const filters = getAllFilters()
 
-    const missingFilters = getMissingFilterStories( storyFiles, filters )
+    const missingFilters = getMissingFilterStories(storyFiles, filters)
 
     // console.log( 'storyFiles', storyFiles )
 
     // Write the missing filters to a file
-    for ( const missingFilter of missingFilters ) {
-        const { frontmatter } = await makeFilterMarkdownContent( missingFilter )
-        const markdownFilePath = makeStoryPathFromFilter( missingFilter )
+    for (const missingFilter of missingFilters) {
+        const {frontmatter} = await makeFilterMarkdownContent(missingFilter)
+        const markdownFilePath = makeStoryPathFromFilter(missingFilter)
 
-        const markdownContent = matter.stringify( '', frontmatter )
+        const markdownContent = matter.stringify('', frontmatter)
 
-        await fs.writeFile( markdownFilePath, markdownContent )
+        await fs.writeFile(markdownFilePath, markdownContent)
     }
 }

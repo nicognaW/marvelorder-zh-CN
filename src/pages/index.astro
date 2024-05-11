@@ -1,36 +1,33 @@
 ---
 // @ts-ignore
-import { getListingsFromFilePaths } from '~/src/helpers/node/listing-files.ts'
+import {getListingsFromFilePaths} from '~/src/helpers/node/listing-files.ts'
 // @ts-ignore
-import { convertNullValuesForAstro } from '~/src/helpers/listing.ts'
+import {convertNullValuesForAstro} from '~/src/helpers/listing.ts'
 
 import Layout from '../layouts/HorizontalScroll.astro'
 import ListingRow from '../components/listing-row.vue'
 
 export const prerender = true
 
-const pages = await Astro.glob( '/src/pages/zh/*.md' )
+const pages = await Astro.glob('/src/pages/zh/*.md')
 
 
-const listings = await getListingsFromFilePaths( pages.map( page => page.file ) )
-
-
-
+const listings = await getListingsFromFilePaths(pages.map(page => page.file))
 ---
 <Layout>
 
 
-	<ListingRow
-		client:load
-		listings={ convertNullValuesForAstro( listings ) }
-		initial-sort="default"
-	/>
+    <ListingRow
+        client:load
+        listings={convertNullValuesForAstro(listings)}
+        initial-sort="default"
+    />
 
 
-	<script is:inline>
-		const initialListing = document.querySelector('.listing-card-initial')
-		// Trigger scroll to out upcoming listing here
-		// so that we don't have to wait for Vue to hydrate
-		document.querySelector('.listing-row').scrollLeft = initialListing.offsetLeft - window.innerWidth + initialListing.offsetWidth * 1.75
-	</script>
+    <script is:inline>
+        const initialListing = document.querySelector('.listing-card-initial')
+        // Trigger scroll to out upcoming listing here
+        // so that we don't have to wait for Vue to hydrate
+        document.querySelector('.listing-row').scrollLeft = initialListing.offsetLeft - window.innerWidth + initialListing.offsetWidth * 1.75
+    </script>
 </Layout>

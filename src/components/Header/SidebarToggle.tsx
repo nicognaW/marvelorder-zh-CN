@@ -1,25 +1,24 @@
-import type { FunctionalComponent } from 'preact'
-import { useEffect, useState } from 'preact/hooks'
+import type {FunctionalComponent} from 'preact'
+import {useEffect, useState} from 'preact/hooks'
 
 const MenuToggle: FunctionalComponent = () => {
-    const [ sidebarShown, setSidebarShown ] = useState( false )
+    const [sidebarShown, setSidebarShown] = useState(false)
 
-    useEffect( () => {
-        const body = document.getElementsByTagName( 'body' )[ 0 ]
-        if ( sidebarShown ) {
-            body.classList.add( 'mobile-sidebar-toggle' )
+    useEffect(() => {
+        const body = document.getElementsByTagName('body')[0]
+        if (sidebarShown) {
+            body.classList.add('mobile-sidebar-toggle')
+        } else {
+            body.classList.remove('mobile-sidebar-toggle')
         }
-        else {
-            body.classList.remove( 'mobile-sidebar-toggle' )
-        }
-    }, [ sidebarShown ] )
+    }, [sidebarShown])
 
     return (
         <button
             type="button"
             aria-pressed={sidebarShown ? 'true' : 'false'}
             id="menu-toggle"
-            onClick={() => setSidebarShown( !sidebarShown )}
+            onClick={() => setSidebarShown(!sidebarShown)}
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"

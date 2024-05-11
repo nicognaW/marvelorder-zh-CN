@@ -1,48 +1,47 @@
 ---
 // import { byListingDate } from '~/src/helpers/sort.ts'
-import { getListingsFromFilePaths } from '~/src/helpers/node/listing-files.ts'
+import {getListingsFromFilePaths} from '~/src/helpers/node/listing-files.ts'
 import {
-	isMCU,
-	FilteredListings
+    isMCU,
+    FilteredListings
 } from '~/src/helpers/listing-filters'
 // @ts-ignore
-import { convertNullValuesForAstro } from '~/src/helpers/listing.ts'
+import {convertNullValuesForAstro} from '~/src/helpers/listing.ts'
 
 import Layout from '../layouts/HorizontalScroll.astro'
 import ListingRow from '../components/listing-row.vue'
 
-const pages = await Astro.glob( '/src/pages/zh/*.md' )
+const pages = await Astro.glob('/src/pages/zh/*.md')
 
-const allListings = await getListingsFromFilePaths( pages.map( page => page.file ) )
+const allListings = await getListingsFromFilePaths(pages.map(page => page.file))
 
 const mcuFilteredListings = new FilteredListings({
-	listings: allListings,
-	initialFilters: new Map([
-		[ isMCU, true ]
-	]),
-	listingsSort: 'default'
+    listings: allListings,
+    initialFilters: new Map([
+        [isMCU, true]
+    ]),
+    listingsSort: 'default'
 })
 
-const rawListings = mcuFilteredListings.list.map( listing => listing.sourceListing )
-
+const rawListings = mcuFilteredListings.list.map(listing => listing.sourceListing)
 ---
 <Layout
-	content={{
-		title: 'Marvel Cinematic Universe Movies and Series in Order - MarvelOrder.com',
-	}}
+    content={{
+        title: 'Marvel Cinematic Universe Movies and Series in Order - MarvelOrder.com',
+    }}
 >
 
-	<ListingRow
-		client:load
-		listings={ convertNullValuesForAstro( rawListings ) }
-		initial-sort="none"
-	/>
+    <ListingRow
+        client:load
+        listings={convertNullValuesForAstro(rawListings)}
+        initial-sort="none"
+    />
 
 
-	<script is:inline>
-		const initialListing = document.querySelector('.listing-card-initial')
-		// Trigger scroll to out upcoming listing here
-		// so that we don't have to wait for Vue to hydrate
-		document.querySelector('.listing-row').scrollLeft = initialListing.offsetLeft - window.innerWidth + initialListing.offsetWidth * 1.75
-	</script>
+    <script is:inline>
+        const initialListing = document.querySelector('.listing-card-initial')
+        // Trigger scroll to out upcoming listing here
+        // so that we don't have to wait for Vue to hydrate
+        document.querySelector('.listing-row').scrollLeft = initialListing.offsetLeft - window.innerWidth + initialListing.offsetWidth * 1.75
+    </script>
 </Layout>

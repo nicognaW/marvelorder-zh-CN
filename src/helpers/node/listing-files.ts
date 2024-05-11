@@ -2,11 +2,11 @@
 import fs from 'fs-extra'
 import matter from 'gray-matter'
 import glob from 'fast-glob'
-import { capitalCase } from 'change-case'
+import {capitalCase} from 'change-case'
 
-import { listingsGlobPattern } from '~/src/config.ts'
+import {listingsGlobPattern} from '~/src/config.ts'
 
-import { trimCharacter } from '~/src/helpers/string.ts'
+import {trimCharacter} from '~/src/helpers/string.ts'
 import {
     ensureMappedListing,
     ensureMappedListings,
@@ -18,7 +18,7 @@ import {
     makeNewListingContents,
 } from '~/src/helpers/markdown-page.ts'
 
-import type { Filter, Listing, ListingFrontMatter } from '~/src/helpers/types.ts'
+import type {Filter, Listing, ListingFrontMatter} from '~/src/helpers/types.ts'
 
 import * as filterExports from '~/src/helpers/listing-filters.ts'
 
@@ -27,327 +27,326 @@ import {
     isUpcoming,
 } from '~/src/helpers/listing-filters.ts'
 
-export async function getListingFiles () {
-    const listingFiles = await glob( listingsGlobPattern )
+export async function getListingFiles() {
+    const listingFiles = await glob(listingsGlobPattern)
 
     return listingFiles
 }
 
-export async function getListingFromFile ( filePath: string ) {
+export async function getListingFromFile(filePath: string) {
     // Throw on non-string filePath
-    if ( typeof filePath !== 'string' ) {
-        throw new TypeError( 'getListingFromFile() requires a string' )
+    if (typeof filePath !== 'string') {
+        throw new TypeError('getListingFromFile() requires a string')
     }
 
-    const markdown: string = await fs.readFile( filePath, 'utf8' )
+    const markdown: string = await fs.readFile(filePath, 'utf8')
 
-    return getDataFromListingContents( {
+    return getDataFromListingContents({
         markdown,
         matter,
-    } )
+    })
 }
 
-export async function getListingsFromFilePaths ( filePaths: string[] ) {
+export async function getListingsFromFilePaths(filePaths: string[]) {
     const listings: ListingFrontMatter[] = []
 
-    for ( const filePath of filePaths ) {
-        const { listing, tmdb } = await getListingFromFile( filePath )
+    for (const filePath of filePaths) {
+        const {listing, tmdb} = await getListingFromFile(filePath)
 
         // if the listing is disabled, skip it
         // Draft doubles as disable since it's used by Astro
         // https://docs.astro.build/en/guides/markdown-content/#markdown-drafts
-        if ( listing?.draft === true ) {
+        if (listing?.draft === true) {
             continue
         }
 
         // Merge listing data
-        listings.push( mergeListingData( tmdb, listing ) )
+        listings.push(mergeListingData(tmdb, listing))
     }
 
     return listings
 }
 
-export async function getAllListings () {
+export async function getAllListings() {
     const listingFilePaths = await getListingFiles()
 
-    const listingDetails = await getListingsFromFilePaths( listingFilePaths )
+    const listingDetails = await getListingsFromFilePaths(listingFilePaths)
 
     return listingDetails
 }
 
-export async function getAllListingsMapped () {
+export async function getAllListingsMapped() {
     const allListings = await getAllListings()
-    const allListingsMapped = ensureMappedListings( allListings )
+    const allListingsMapped = ensureMappedListings(allListings)
 
     return allListingsMapped
 }
 
-export async function getSingleListingFromUrl ( rawUrl: string ) {
+export async function getSingleListingFromUrl(rawUrl: string) {
     // Parse URL
-    const url = new URL( rawUrl )
+    const url = new URL(rawUrl)
     // Get file path from URL and trim any slashes
-    const urlPathname = url.pathname.replace( /^\/|\/$/g, '' )
+    const urlPathname = url.pathname.replace(/^\/|\/$/g, '')
     // Put URL pathname into path format
-    const filePath = `./src/pages/${ urlPathname }.md`
-    const { listing } = await getListingFromFile( filePath )
+    const filePath = `./src/pages/${urlPathname}.md`
+    const {listing} = await getListingFromFile(filePath)
 
     return listing
 }
 
-export async function getListingDetailsFromPaths ( filePaths: string[] ) {
+export async function getListingDetailsFromPaths(filePaths: string[]) {
     const listings = []
 
-    for ( const filePath of filePaths ) {
-        const details = await getListingFromFile( filePath )
+    for (const filePath of filePaths) {
+        const details = await getListingFromFile(filePath)
 
         // if the listing is disabled, skip it
         // Draft doubles as disable since it's used by Astro
         // https://docs.astro.build/en/guides/markdown-content/#markdown-drafts
-        if ( details.listing?.draft === true ) {
+        if (details.listing?.draft === true) {
             continue
         }
 
-        listings.push( details )
+        listings.push(details)
     }
 
     return listings
 }
 
-export async function getDefaultFilteredListings () {
+export async function getDefaultFilteredListings() {
     const rawListings = await getAllListings()
 
-    const filteredListings = new FilteredListings( {
+    const filteredListings = new FilteredListings({
         listings: rawListings,
         listingsSort: 'default',
-    } )
+    })
 
     return filteredListings.list
 }
 
-export async function getListingsByTitleLength () {
+export async function getListingsByTitleLength() {
     const rawListings = await getAllListings()
 
-    const listingsByTitleLength = new FilteredListings( {
+    const listingsByTitleLength = new FilteredListings({
         listings: rawListings,
         listingsSort: 'title-length',
-    } )
+    })
 
     return listingsByTitleLength.list
 }
 
-export async function getUpcomingListings () {
+export async function getUpcomingListings() {
     const rawListings = await getAllListings()
 
     // Filter listings
-    const upcomingListings = new FilteredListings( {
+    const upcomingListings = new FilteredListings({
         listings: rawListings,
-        initialFilters: new Map( [
-            [ isUpcoming, true ],
-        ] ),
+        initialFilters: new Map([
+            [isUpcoming, true],
+        ]),
         listingsSort: 'default',
-    } )
+    })
 
     return upcomingListings.list
 }
 
-export async function getTaggedListings ( tags: string[] ) {
+export async function getTaggedListings(tags: string[]) {
     // Return empty array if no tags are provided
-    if ( !tags || tags.length === 0 ) {
+    if (!tags || tags.length === 0) {
         return []
     }
 
     const rawListings = await getAllListings()
 
-    const hasAnyTag = ( listing: Listing ) => {
-        return tags.some( ( tag ) => {
-            return listing.hasTag( tag )
-        } )
+    const hasAnyTag = (listing: Listing) => {
+        return tags.some((tag) => {
+            return listing.hasTag(tag)
+        })
     }
 
     // Filter listings
-    const taggedListings = new FilteredListings( {
+    const taggedListings = new FilteredListings({
         listings: rawListings,
         initialFilters: [
-            [ hasAnyTag, true ],
+            [hasAnyTag, true],
         ],
         listingsSort: 'default',
-    } )
+    })
 
     return taggedListings.list
 }
 
-export async function getListingsFromFilterSlug ( fromSlug = '' ) {
+export async function getListingsFromFilterSlug(fromSlug = '') {
     try {
-        const filter = findFilterFromSlug( fromSlug )
+        const filter = findFilterFromSlug(fromSlug)
         const rawListings = await getAllListings()
 
-        const filteredListings = new FilteredListings( {
+        const filteredListings = new FilteredListings({
             listings: rawListings,
             initialFilters: [
-                [ filter.filter, true ],
+                [filter.filter, true],
             ],
             listingsSort: 'default',
-        } )
+        })
 
         return filteredListings.list
-    }
-    catch ( error ) {
+    } catch (error) {
         return []
     }
 }
 
-export function upsertListing ( listing: Listing, data: any ) {
+export function upsertListing(listing: Listing, data: any) {
     // console.log( 'listing', listing )
     // console.log( 'data', data )
 
     // Merge letting the frontmatter take precedence
-    return mergeListingData( listing, data )
+    return mergeListingData(listing, data)
 }
 
-export async function upsertListingFrontmatter ( listingSource: Listing | string, data: any ) {
+export async function upsertListingFrontmatter(listingSource: Listing | string, data: any) {
     const sourceIsString = typeof listingSource === 'string'
 
-    const listing = sourceIsString ? await getListingFromFile( listingSource ) : listingSource
+    const listing = sourceIsString ? await getListingFromFile(listingSource) : listingSource
 
     const {
         markdownBody,
         pageMeta,
-    } = await makeNewListingContents( { listing } )
+    } = await makeNewListingContents({listing})
 
-    const updatedListing = upsertListing( pageMeta, data )
+    const updatedListing = upsertListing(pageMeta, data)
 
     // console.log( 'markdownBody', markdownBody )
     // console.log( 'updatedListing', updatedListing )
 
-    return makeTomlFromListingData( markdownBody, updatedListing )
+    return makeTomlFromListingData(markdownBody, updatedListing)
 }
 
-export function makeTomlFromListingData ( body: string, listing: Listing ) {
-    const markdownWithToml = matter.stringify( body, listing )
+export function makeTomlFromListingData(body: string, listing: Listing) {
+    const markdownWithToml = matter.stringify(body, listing)
 
     return markdownWithToml
 }
 
 // Node specfic markdown writer
 // since Deno uses custom fs and import method for gray-matter
-export async function writeMarkdownFileNode ( { path, markdownBody, pageMeta } ) {
+export async function writeMarkdownFileNode({path, markdownBody, pageMeta}) {
     // Ensure markdown body end with newline
-    markdownBody = markdownBody.endsWith( '\n' ) ? markdownBody : `${ markdownBody }\n`
+    markdownBody = markdownBody.endsWith('\n') ? markdownBody : `${markdownBody}\n`
 
     // console.log( 'path', path )
     // console.log('markdownBody', markdownBody)
     // console.log('pageMeta', pageMeta)
 
-    const hasPageMeta = Object( pageMeta ) === pageMeta && Object.keys( pageMeta ).length > 0
+    const hasPageMeta = Object(pageMeta) === pageMeta && Object.keys(pageMeta).length > 0
 
     // If there is no pageMeta
     // then assume everything the body already has encoded frontmatter
-    if ( !hasPageMeta ) {
-        const bodyHasFrontmatter = markdownBody.startsWith( '---' )
+    if (!hasPageMeta) {
+        const bodyHasFrontmatter = markdownBody.startsWith('---')
 
         // If there is no frontmatter then throw
-        if ( !bodyHasFrontmatter ) {
-            throw new Error( `No frontmatter found for ${ path }` )
+        if (!bodyHasFrontmatter) {
+            throw new Error(`No frontmatter found for ${path}`)
         }
 
-        await fs.writeFile( path, markdownBody )
+        await fs.writeFile(path, markdownBody)
 
         return
     }
 
-    const markdownContent = matter.stringify( markdownBody, pageMeta )
+    const markdownContent = matter.stringify(markdownBody, pageMeta)
 
     // console.log('markdownContent', markdownContent)
 
-    await fs.writeFile( path, markdownContent )
+    await fs.writeFile(path, markdownContent)
 }
 
-function isFilterFn ( filter: unknown ): filter is ( listing: Listing ) => boolean {
+function isFilterFn(filter: unknown): filter is (listing: Listing) => boolean {
     return typeof filter === 'function'
 }
 
-export function getAllFilters (): Filter[] {
+export function getAllFilters(): Filter[] {
     const filters: Filter[] = []
 
-    for ( const [ exportName, filterFn ] of Object.entries( filterExports ) ) {
-        const isFilterStyleName = exportName.startsWith( 'is' ) || exportName.startsWith( 'has' )
+    for (const [exportName, filterFn] of Object.entries(filterExports)) {
+        const isFilterStyleName = exportName.startsWith('is') || exportName.startsWith('has')
 
-        if ( !isFilterStyleName ) {
+        if (!isFilterStyleName) {
             continue
         }
 
-        if ( !isFilterFn( filterFn ) ) {
+        if (!isFilterFn(filterFn)) {
             continue
         }
 
-        const name = capitalCase( exportName.replace( /^(is)/, '' ) )
-        const slug = makeSlug( name )
+        const name = capitalCase(exportName.replace(/^(is)/, ''))
+        const slug = makeSlug(name)
 
-        filters.push( {
+        filters.push({
             exportName,
             name,
             slug,
             filter: filterFn,
-        } )
+        })
     }
 
     return filters
 }
 
-function findFilterFromSlug ( fromSlug = '' ) {
+function findFilterFromSlug(fromSlug = '') {
     const allFilters = getAllFilters()
 
-    for ( const filter of allFilters ) {
-        const { slug } = filter
+    for (const filter of allFilters) {
+        const {slug} = filter
         // const name = capitalCase( exportName.replace( /^(is)/, '' ) )
         // const slug = makeSlug( name )
 
-        if ( fromSlug === slug ) {
+        if (fromSlug === slug) {
             return filter
         }
     }
 
-    throw new Error( `No filter found for slug ${ fromSlug }` )
+    throw new Error(`No filter found for slug ${fromSlug}`)
 }
 
-export async function getListingsFromSlug ( slug = '' ) {
-    if ( !slug ) {
-        throw new Error( 'slug must be a string' )
+export async function getListingsFromSlug(slug = '') {
+    if (!slug) {
+        throw new Error('slug must be a string')
     }
 
-    const filter = findFilterFromSlug( slug )
+    const filter = findFilterFromSlug(slug)
 
     const baseListings = await getAllListings()
 
     // console.log( 'baseListings', baseListings )
 
-    const filteredListings = new FilteredListings( {
+    const filteredListings = new FilteredListings({
         listings: baseListings,
         initialFilters: [
-            [ filter.filter, true ],
+            [filter.filter, true],
         ],
         listingsSort: 'default',
-    } )
+    })
 
     return filteredListings.list
 }
 
-export async function mapStoryContentToListings ( storyMarkdown: string ) {
+export async function mapStoryContentToListings(storyMarkdown: string) {
     // If there's no h2 headings then return empty array
-    if ( !storyMarkdown.includes( '##' ) ) {
+    if (!storyMarkdown.includes('##')) {
         return {
             cover: null,
             listings: [],
         }
     }
 
-    const markdownSections = storyMarkdown.trim().split( '##' )
+    const markdownSections = storyMarkdown.trim().split('##')
 
     // Loop through each line to build the listings
     const listingsFromContent = await Promise.all(
         markdownSections
-            .filter( section => section.trim() !== '' )
-            .map( async ( lines ) => {
+            .filter(section => section.trim() !== '')
+            .map(async (lines) => {
                 const sectionDetails = {
                     heading: '',
                     url: '',
@@ -355,37 +354,37 @@ export async function mapStoryContentToListings ( storyMarkdown: string ) {
                 }
 
                 // Extract heading link and content
-                const [ headingLink, ...sectionContentParts ] = lines.trim().split( '\n' ).filter( line => line.trim() !== '' )
+                const [headingLink, ...sectionContentParts] = lines.trim().split('\n').filter(line => line.trim() !== '')
 
-                sectionDetails.description = sectionContentParts.join( '\n' )
+                sectionDetails.description = sectionContentParts.join('\n')
 
                 // If it's the cover
                 // then return right now
-                if ( headingLink.toLowerCase().includes( 'cover' ) ) {
+                if (headingLink.toLowerCase().includes('cover')) {
                     sectionDetails.heading = 'Cover'
                     return sectionDetails
                 }
 
                 // Extract text and url from markdown link
-                const [ sectionHeadingText, listingUrlString ] = headingLink.trim().slice( 1, -1 ).split( '](' )
+                const [sectionHeadingText, listingUrlString] = headingLink.trim().slice(1, -1).split('](')
 
-                const url = new URL( listingUrlString )
+                const url = new URL(listingUrlString)
 
                 sectionDetails.heading = sectionHeadingText
                 sectionDetails.url = url.pathname
 
-                const listing = ensureMappedListing( await getSingleListingFromUrl( listingUrlString ) )
+                const listing = ensureMappedListing(await getSingleListingFromUrl(listingUrlString))
 
                 // Transfer sectionDetails to listing
-                for ( const key of Object.keys( sectionDetails ) ) {
-                    listing[ key ] = sectionDetails[ key ]
+                for (const key of Object.keys(sectionDetails)) {
+                    listing[key] = sectionDetails[key]
                 }
 
                 return listing
-            } ),
+            }),
     )
 
-    const [ cover, ...listings ] = listingsFromContent
+    const [cover, ...listings] = listingsFromContent
 
     return {
         cover,
@@ -393,89 +392,89 @@ export async function mapStoryContentToListings ( storyMarkdown: string ) {
     }
 }
 
-const extraWords = new Set( [
+const extraWords = new Set([
     'marvels',
     'prelude',
     'marvel one shot',
-] )
+])
 
-export function cleanExtraWordsFromTitle ( title: string, separator = ' ' ) {
+export function cleanExtraWordsFromTitle(title: string, separator = ' ') {
     let workingString = title
 
-    for ( const word of extraWords ) {
+    for (const word of extraWords) {
         // Trim from the start
-        if ( workingString.toLowerCase().startsWith( word ) ) {
+        if (workingString.toLowerCase().startsWith(word)) {
             // PREFIX is exactly at the beginning
-            workingString = workingString.slice( word.length )
+            workingString = workingString.slice(word.length)
 
             // Trim any separator characters
-            workingString = trimCharacter( workingString, separator )
+            workingString = trimCharacter(workingString, separator)
         }
 
         // Trim from end
-        if ( workingString.toLowerCase().endsWith( word ) ) {
+        if (workingString.toLowerCase().endsWith(word)) {
             // SUFFIX is exactly at the end
-            workingString = workingString.slice( 0, -word.length ).trim()
+            workingString = workingString.slice(0, -word.length).trim()
 
             // Trim any separator characters
-            workingString = trimCharacter( workingString, separator )
+            workingString = trimCharacter(workingString, separator)
         }
     }
 
     return workingString
 }
 
-function makeSlugForMatchingTitle ( string: string ) {
-    let workingString = makeSlug( string )
+function makeSlugForMatchingTitle(string: string) {
+    let workingString = makeSlug(string)
 
     // Strip marvel-one-shot
-    workingString = workingString.replace( /marvel-one-shot-/, '' )
+    workingString = workingString.replace(/marvel-one-shot-/, '')
 
     // Strip 'Marvel's ' from beginning
     const PREFIX = 'marvels-'
-    if ( workingString.startsWith( PREFIX ) ) {
+    if (workingString.startsWith(PREFIX)) {
         // PREFIX is exactly at the beginning
-        workingString = workingString.slice( PREFIX.length )
+        workingString = workingString.slice(PREFIX.length)
     }
 
     return workingString
 }
 
-function eitherIncludes ( stringA: string, stringB: string ) {
-    return stringA.includes( stringB ) || stringB.includes( stringA )
+function eitherIncludes(stringA: string, stringB: string) {
+    return stringA.includes(stringB) || stringB.includes(stringA)
 }
 
-export function eitherFuzzyIncludes ( stringA: string, stringB: string ) {
+export function eitherFuzzyIncludes(stringA: string, stringB: string) {
     return eitherIncludes(
-        makeSlugForMatchingTitle( stringA ),
-        makeSlugForMatchingTitle( stringB ),
+        makeSlugForMatchingTitle(stringA),
+        makeSlugForMatchingTitle(stringB),
     )
 }
 
-export function matchTitles ( title: string, anotherTitle: Listing ) {
+export function matchTitles(title: string, anotherTitle: Listing) {
     // Catch empty titles
-    if ( !title.length ) {
-        throw new Error( 'title must not be empty' )
+    if (!title.length) {
+        throw new Error('title must not be empty')
     }
 
-    const anotherTitleSlug = makeSlugForMatchingTitle( anotherTitle )
-    const titleSlug = makeSlugForMatchingTitle( title )
+    const anotherTitleSlug = makeSlugForMatchingTitle(anotherTitle)
+    const titleSlug = makeSlugForMatchingTitle(title)
 
     return anotherTitleSlug === titleSlug
 }
 
-export function matchListingTitle ( title: string, listing: Listing ) {
-    return matchTitles( title, listing.title )
+export function matchListingTitle(title: string, listing: Listing) {
+    return matchTitles(title, listing.title)
 }
 
-export function fuzzyMatchListingTitle ( title: string, listing: Listing ) {
+export function fuzzyMatchListingTitle(title: string, listing: Listing) {
     // Catch empty titles
-    if ( !title.length ) {
-        throw new Error( 'title must not be empty' )
+    if (!title.length) {
+        throw new Error('title must not be empty')
     }
 
-    const listingSlug = makeSlugForMatchingTitle( listing.title )
-    const titleSlug = makeSlugForMatchingTitle( title )
+    const listingSlug = makeSlugForMatchingTitle(listing.title)
+    const titleSlug = makeSlugForMatchingTitle(title)
 
     // if ( listingSlug.startsWith('agents') ) {
     //     console.log( { listingSlug, titleSlug } )
@@ -485,28 +484,28 @@ export function fuzzyMatchListingTitle ( title: string, listing: Listing ) {
     // console.log( 'orderedSlug', inUniverseSlug )
 
     // Check for exact match
-    if ( listingSlug === titleSlug ) {
+    if (listingSlug === titleSlug) {
         return true
     }
 
     // Check that either starts with
-    if ( listingSlug.startsWith( titleSlug ) || titleSlug.startsWith( listingSlug ) ) {
+    if (listingSlug.startsWith(titleSlug) || titleSlug.startsWith(listingSlug)) {
         return true
     }
 
     // We can be a bit more generous with the slug matching
     // since the listing are all in the same month and year
-    return eitherIncludes( listingSlug, titleSlug )
+    return eitherIncludes(listingSlug, titleSlug)
 }
 
-export function cleanListingTitle ( listingTitle: string ) {
+export function cleanListingTitle(listingTitle: string) {
     let workingTitleString = listingTitle
 
     // Remove Marvel One-Shot
-    workingTitleString = workingTitleString.replace( 'Marvel One-Shot', '' )
+    workingTitleString = workingTitleString.replace('Marvel One-Shot', '')
 
     // Remove Marvel's
-    workingTitleString = workingTitleString.replace( 'Marvel\'s', '' )
+    workingTitleString = workingTitleString.replace('Marvel\'s', '')
 
     return workingTitleString.trim()
 }

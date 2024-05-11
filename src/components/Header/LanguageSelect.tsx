@@ -1,8 +1,8 @@
-import type { FunctionalComponent } from 'preact'
+import type {FunctionalComponent} from 'preact'
 import './LanguageSelect.css'
-import { KNOWN_LANGUAGES, langPathRegex } from '../../languages'
+import {KNOWN_LANGUAGES, langPathRegex} from '../../languages'
 
-const LanguageSelect: FunctionalComponent<{ lang: string }> = ( { lang } ) => {
+const LanguageSelect: FunctionalComponent<{ lang: string }> = ({lang}) => {
     return (
         <div class="language-select-wrapper">
             <svg
@@ -26,20 +26,22 @@ const LanguageSelect: FunctionalComponent<{ lang: string }> = ( { lang } ) => {
             <select
                 class="language-select"
                 value={lang}
-                onChange={( e ) => {
+                onChange={(e) => {
                     const newLang = e.target.value
-                    let actualDest = window.location.pathname.replace( langPathRegex, '/' )
-                    if ( actualDest == '/' ) { actualDest = '/introduction' }
-                    window.location.pathname = `/${ newLang }${ actualDest }`
+                    let actualDest = window.location.pathname.replace(langPathRegex, '/')
+                    if (actualDest == '/') {
+                        actualDest = '/introduction'
+                    }
+                    window.location.pathname = `/${newLang}${actualDest}`
                 }}
             >
-                {Object.keys( KNOWN_LANGUAGES ).map( ( key ) => {
+                {Object.keys(KNOWN_LANGUAGES).map((key) => {
                     return (
-                        <option value={KNOWN_LANGUAGES[ key ]}>
+                        <option value={KNOWN_LANGUAGES[key]}>
                             <span>{key}</span>
                         </option>
                     )
-                } )}
+                })}
             </select>
         </div>
     )

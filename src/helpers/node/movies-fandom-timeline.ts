@@ -1,9 +1,9 @@
 import fs from 'fs-extra'
 import fetch from 'node-fetch'
 
-import { v5 as uuidV5 } from 'uuid'
+import {v5 as uuidV5} from 'uuid'
 import slugify from 'slugify'
-import { parseHTML } from 'linkedom'
+import {parseHTML} from 'linkedom'
 
 // Load wink-nlp package  & helpers.
 import winkNLP from 'wink-nlp'
@@ -25,12 +25,12 @@ import {
     matchListingTitle,
 } from '~/src/helpers/node/listing-files.ts'
 
-import { storePath } from '~/src/config.ts'
+import {storePath} from '~/src/config.ts'
 
 // Instantiate winkNLP.
-const nlp = winkNLP( winkEngModel )
+const nlp = winkNLP(winkEngModel)
 
-export const moviesFandomTimelinePath = `${ storePath }/movies-fandom-timeline.json`
+export const moviesFandomTimelinePath = `${storePath}/movies-fandom-timeline.json`
 
 export const timelineUrl = 'https://marvel-movies.fandom.com/wiki/Earth-199999#Timeline'
 
@@ -38,97 +38,97 @@ export const startContentMarker = '<div id="content"'
 
 export const endContentMarker = '<div class="page-footer"'
 
-export async function getEntriesFromJson () {
-    const entriesJson = await fs.readJSON( moviesFandomTimelinePath )
+export async function getEntriesFromJson() {
+    const entriesJson = await fs.readJSON(moviesFandomTimelinePath)
 
     return entriesJson
 }
 
-export async function saveMoviesFandomTimeline () {
+export async function saveMoviesFandomTimeline() {
     const timeline = await fetchTimeline()
 
-    await fs.writeFile( moviesFandomTimelinePath, JSON.stringify( timeline.entries, null, 2 ) )
+    await fs.writeFile(moviesFandomTimelinePath, JSON.stringify(timeline.entries, null, 2))
 }
 
-export async function getTimelineFromJson () {
+export async function getTimelineFromJson() {
     const entries = await getEntriesFromJson()
 
-    return getTimelineFromEntries( entries )
+    return getTimelineFromEntries(entries)
 }
 
-function* idMaker () {
+function* idMaker() {
     let index = 0
-    while ( true ) {
+    while (true) {
         yield index++
     }
 }
 
-function cleanWhiteSpace ( string ) {
-    return string.replace( /(\r\n|\n|\r)/gm, ' ' ).trim()
+function cleanWhiteSpace(string) {
+    return string.replace(/(\r\n|\n|\r)/gm, ' ').trim()
 }
 
 const DEFAULT_HASH_NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341'
 
 // https://stackoverflow.com/a/67203497/1397641
-function hashString ( textContent: string ) {
+function hashString(textContent: string) {
     // Omit non-alphanumeric characters
-    textContent = textContent.replace( /[^a-z0-9]/gi, '' )
+    textContent = textContent.replace(/[^a-z0-9]/gi, '')
 
-    return uuidV5( textContent, DEFAULT_HASH_NAMESPACE )
+    return uuidV5(textContent, DEFAULT_HASH_NAMESPACE)
 }
 
 // Remove any link brackets from the headings
-function cleanBrackets ( heading: string ) {
-    return heading.replace( '[]', '' )
+function cleanBrackets(heading: string) {
+    return heading.replace('[]', '')
 }
 
-export function breakEntryTextIntoSentences ( paragraph: string ) {
+export function breakEntryTextIntoSentences(paragraph: string) {
     // Check if incoming string contains 'vol.'
     // so that know to join the sentences
-    const hasJoinKeywords = paragraph.toLowerCase().includes( 'vol.' )
+    const hasJoinKeywords = paragraph.toLowerCase().includes('vol.')
 
     // Read text
-    const doc = nlp.readDoc( paragraph )
+    const doc = nlp.readDoc(paragraph)
     // Extract sentences from the data
     const sentences = doc.sentences().out()
 
-    if ( hasJoinKeywords ) {
+    if (hasJoinKeywords) {
         // Find the index of the sentence that contains 'vol.'
-        const volSentenceIndex = sentences.findIndex( sentence => sentence.toLowerCase().includes( 'vol.' ) )
+        const volSentenceIndex = sentences.findIndex(sentence => sentence.toLowerCase().includes('vol.'))
 
         // Throw if we can't find the sentence
-        if ( volSentenceIndex === -1 ) {
-            throw new Error( 'Found keyword but now it\'s missing' )
+        if (volSentenceIndex === -1) {
+            throw new Error('Found keyword but now it\'s missing')
         }
 
         // Join to the sentence after it
-        const volSentence = sentences[ volSentenceIndex ]
-        const nextSentence = sentences[ volSentenceIndex + 1 ]
-        sentences[ volSentenceIndex ] = `${ volSentence } ${ nextSentence }`
+        const volSentence = sentences[volSentenceIndex]
+        const nextSentence = sentences[volSentenceIndex + 1]
+        sentences[volSentenceIndex] = `${volSentence} ${nextSentence}`
 
         // Remove the sentence after
-        sentences.splice( volSentenceIndex + 1, 1 )
+        sentences.splice(volSentenceIndex + 1, 1)
     }
 
     return sentences
 }
 
-function makeMoviesFandomURLSlug ( string: string ) {
-    return slugify( string, {
+function makeMoviesFandomURLSlug(string: string) {
+    return slugify(string, {
         lower: true,
         remove: /[^a-zA-Z\d\s\-]/g,
         replacement: '_',
         strict: true,
-    } )
+    })
 }
 
-function getDetailsFromEpisodeSlug ( slug: string ) {
+function getDetailsFromEpisodeSlug(slug: string) {
     // Throw if the word 'episode' is not in the slug
-    if ( !slug.includes( 'episode' ) ) {
-        throw new Error( `Slug ${ slug } does not contain the word 'episode'` )
+    if (!slug.includes('episode')) {
+        throw new Error(`Slug ${slug} does not contain the word 'episode'`)
     }
 
-    const slugParts = slug.split( '-' )
+    const slugParts = slug.split('-')
 
     const slugObject = {
         show: '',
@@ -136,15 +136,15 @@ function getDetailsFromEpisodeSlug ( slug: string ) {
         episode: -1,
     }
 
-    const slugKeys = Object.keys( slugObject )
+    const slugKeys = Object.keys(slugObject)
 
-    for ( const [ index, slugPart ] of slugParts.entries() ) {
+    for (const [index, slugPart] of slugParts.entries()) {
         // If this is one of our slug keys
         // set it
-        if ( slugKeys.includes( slugPart ) ) {
-            const slugValue = slugParts[ index + 1 ]
-            const value = Number( slugValue ) || slugValue
-            slugObject[ slugPart ] = value
+        if (slugKeys.includes(slugPart)) {
+            const slugValue = slugParts[index + 1]
+            const value = Number(slugValue) || slugValue
+            slugObject[slugPart] = value
         }
     }
 
@@ -158,7 +158,7 @@ export interface MarvelMoviesFandomTimelineEntry {
     hash: string
     timeDescription: string
     timeline: string
-    sourceUrl: `https://${ string }`
+    sourceUrl: `https://${string}`
     referenceLinks: Array<{
         href: string
         text: string
@@ -191,11 +191,12 @@ interface MarvelMoviesFandomOptions {
 interface JSDOMElement {
     textContent: string
     href: string
-    getAttribute ( key: string ): string
+
+    getAttribute(key: string): string
 }
 
 class MarvelMoviesFandomTimeline {
-    constructor ( options = {} as MarvelMoviesFandomOptions ) {
+    constructor(options = {} as MarvelMoviesFandomOptions) {
         this.entries = options?.entries || []
 
         this.runningTimeline = ''
@@ -206,18 +207,18 @@ class MarvelMoviesFandomTimeline {
         }
     }
 
-    hasWordsInReferenceLinks ( words: string[], entry: MarvelMoviesFandomTimelineEntry ) {
-        for ( const referenceLink of entry.referenceLinks ) {
+    hasWordsInReferenceLinks(words: string[], entry: MarvelMoviesFandomTimelineEntry) {
+        for (const referenceLink of entry.referenceLinks) {
             // const linkText = referenceLink.text.toLowerCase()
             const linkHref = referenceLink.href.toLowerCase()
 
-            const hasAllWords = words.every( ( word ) => {
+            const hasAllWords = words.every((word) => {
                 const lowerCaseWord = word.toLowerCase()
 
-                return linkHref.includes( lowerCaseWord )
-            } )
+                return linkHref.includes(lowerCaseWord)
+            })
 
-            if ( hasAllWords ) {
+            if (hasAllWords) {
                 return true
             }
         }
@@ -225,47 +226,47 @@ class MarvelMoviesFandomTimeline {
         return false
     }
 
-    get runningTimeDescription () {
-        return Object.values( this.runningTimeParts ).filter( part => part.length ).join( ' ' )
+    get runningTimeDescription() {
+        return Object.values(this.runningTimeParts).filter(part => part.length).join(' ')
     }
 
-    resetTimeParts () {
-        for ( const key in this.runningTimeParts ) {
-            this.runningTimeParts[ key ] = ''
+    resetTimeParts() {
+        for (const key in this.runningTimeParts) {
+            this.runningTimeParts[key] = ''
         }
     }
 
     entryCountGenerator = idMaker()
 
-    async fetchFandomPage () {
-        const response = await fetch( timelineUrl )
+    async fetchFandomPage() {
+        const response = await fetch(timelineUrl)
         return await response.text()
     }
 
-    async getTimelineHTML () {
+    async getTimelineHTML() {
         const pageHTML = await this.fetchFandomPage()
 
-        const startIndex = pageHTML.indexOf( startContentMarker )
-        const endIndex = pageHTML.indexOf( endContentMarker )
+        const startIndex = pageHTML.indexOf(startContentMarker)
+        const endIndex = pageHTML.indexOf(endContentMarker)
 
-        return pageHTML.substring( startIndex, endIndex )
+        return pageHTML.substring(startIndex, endIndex)
     }
 
-    storeEntry ( entry ) {
-        this.entries.push( {
-            hash: hashString( entry.textContent ),
+    storeEntry(entry) {
+        this.entries.push({
+            hash: hashString(entry.textContent),
             ...entry,
-        } )
+        })
     }
 
-    determineReferenceType ( anchorElement ) {
+    determineReferenceType(anchorElement) {
         // If it's (video_game) then it's a video game reference
-        if ( anchorElement.href.includes( '(video_game)' ) ) {
+        if (anchorElement.href.includes('(video_game)')) {
             return 'video_game'
         }
 
         // If it's (comic) then it's a comic reference
-        if ( anchorElement.href.includes( '(comic)' ) ) {
+        if (anchorElement.href.includes('(comic)')) {
             return 'comic'
         }
 
@@ -274,98 +275,98 @@ class MarvelMoviesFandomTimeline {
             '(TV_series)',
         ]
 
-        const isTvReference = tvKeywords.some( keyword => anchorElement.href.includes( keyword ) )
+        const isTvReference = tvKeywords.some(keyword => anchorElement.href.includes(keyword))
 
         // If it's (TV_series) then it's a tv reference
-        if ( isTvReference ) {
+        if (isTvReference) {
             return 'tv'
         }
 
         // If it includes _Episode_ then it's a TV show reference
-        if ( anchorElement.href.includes( '_Episode_' ) ) {
+        if (anchorElement.href.includes('_Episode_')) {
             return 'episode'
         }
 
         return 'unknown'
     }
 
-    extractReferenceLinks ( element ) {
-        return Array.from( element.querySelectorAll( 'a' ) ).map( ( anchorElement: JSDOMElement ) => {
-            const href = anchorElement.getAttribute( 'href' )
+    extractReferenceLinks(element) {
+        return Array.from(element.querySelectorAll('a')).map((anchorElement: JSDOMElement) => {
+            const href = anchorElement.getAttribute('href')
             const text = anchorElement.textContent
 
             return {
                 href,
                 text,
-                referenceType: this.determineReferenceType( anchorElement ),
+                referenceType: this.determineReferenceType(anchorElement),
             }
-        } )
+        })
     }
 
-    determinePrimeReference ( element ) {
+    determinePrimeReference(element) {
         // If there's no parenthesis then it's not a reference
-        if ( !element.innerHTML.includes( '<small>(' ) ) {
+        if (!element.innerHTML.includes('<small>(')) {
             return ''
         }
 
         let workingText = element.innerHTML
 
         // Split at last index of (
-        workingText = workingText.split( '<small>(' ).reverse()[ 0 ]
+        workingText = workingText.split('<small>(').reverse()[0]
 
         // Split at first index of )
-        workingText = workingText.split( ')</small>' )[ 0 ]
+        workingText = workingText.split(')</small>')[0]
 
-        const dom = parseHTML( workingText )
+        const dom = parseHTML(workingText)
 
-        const [ workingLink ] = dom.window.document.querySelectorAll( 'a' )
+        const [workingLink] = dom.window.document.querySelectorAll('a')
 
         workingText = workingLink?.textContent ? workingLink.textContent : ''
 
         // If there's parenthesis within the text then remove it
-        if ( workingText.includes( '(' ) ) {
-            workingText = workingText.split( '(' )[ 0 ]
+        if (workingText.includes('(')) {
+            workingText = workingText.split('(')[0]
         }
 
-        return cleanListingTitle( workingText )
+        return cleanListingTitle(workingText)
     }
 
-    parseListElement ( element ) {
-        const listItems = element.querySelectorAll( 'li' )
+    parseListElement(element) {
+        const listItems = element.querySelectorAll('li')
 
-        for ( const listItem of listItems ) {
+        for (const listItem of listItems) {
             // Skip if it's a list item with no text
-            if ( !listItem.textContent || listItem.textContent.trim() === '' ) {
+            if (!listItem.textContent || listItem.textContent.trim() === '') {
                 continue
             }
 
             // If this list contains a list then it's a tertiary time part
-            const childList = listItem.querySelector( 'ul' )
-            if ( childList ) {
-                const [ part ] = listItem.innerHTML.split( '<ul>' )
+            const childList = listItem.querySelector('ul')
+            if (childList) {
+                const [part] = listItem.innerHTML.split('<ul>')
 
-                this.runningTimeParts.tertiary = cleanWhiteSpace( part ).replace( /<[^>]*>?/gm, '' )
+                this.runningTimeParts.tertiary = cleanWhiteSpace(part).replace(/<[^>]*>?/gm, '')
 
-                this.parseListElement( childList )
+                this.parseListElement(childList)
 
                 continue
             }
 
             // const rawHtml = listItem.innerHTML
-            const textContent = ( () => {
-                if ( !listItem.textContent.includes( '(' ) ) {
+            const textContent = (() => {
+                if (!listItem.textContent.includes('(')) {
                     return listItem.textContent
                 }
 
-                return listItem.textContent.substr( 0, listItem.textContent.lastIndexOf( '(' ) )
-            } )()
-            const referenceLinks = this.extractReferenceLinks( listItem )
+                return listItem.textContent.substr(0, listItem.textContent.lastIndexOf('('))
+            })()
+            const referenceLinks = this.extractReferenceLinks(listItem)
 
             // Use prime referenceLink test as our Prime Reference Title
-            const primeReferenceTitle = this.determinePrimeReference( listItem )
+            const primeReferenceTitle = this.determinePrimeReference(listItem)
 
             // Use last referenceLink that is not an episode
-            const primeReferenceIndex = referenceLinks.findIndex( referenceLink => referenceLink.text === primeReferenceTitle )
+            const primeReferenceIndex = referenceLinks.findIndex(referenceLink => referenceLink.text === primeReferenceTitle)
 
             // if ( !textContent.replace(/(\r\n|\n|\r)/gm, '').endsWith(')') ) {
             //     console.log( 'textContent', textContent.length, { textContent } )
@@ -377,9 +378,9 @@ class MarvelMoviesFandomTimeline {
             //     // throw new Error( 'Raw HTML ends with )' )
             // }
 
-            this.storeEntry( {
+            this.storeEntry({
                 timeDescription: this.runningTimeDescription,
-                timeDescriptionParts: { ...this.runningTimeParts },
+                timeDescriptionParts: {...this.runningTimeParts},
                 // rawHtml,
                 textContent,
                 timeline: this.runningTimeline,
@@ -387,15 +388,15 @@ class MarvelMoviesFandomTimeline {
                 referenceLinks,
                 primeReferenceIndex,
                 primeReferenceTitle,
-            } )
+            })
         }
     }
 
-    parseElement ( element ) {
+    parseElement(element) {
         const tagName = element.tagName.toLowerCase()
         const textContent = element.textContent.trim()
 
-        if ( tagName === 'h2' ) {
+        if (tagName === 'h2') {
             // Reset the time parts
             // so that our primaries don't
             // bleed into the next timeline
@@ -403,7 +404,7 @@ class MarvelMoviesFandomTimeline {
 
             // Get specific heading text
             // so that we avoid capturing [] after the heading
-            const timelineHeading = cleanBrackets( textContent )
+            const timelineHeading = cleanBrackets(textContent)
 
             this.runningTimeline = timelineHeading
 
@@ -413,49 +414,49 @@ class MarvelMoviesFandomTimeline {
             this.runningTimeParts.primary = timelineHeading
 
             // If it's just 'Timeline' then rename it to 'Marvel Cinematic Universe'
-            if ( this.runningTimeline === 'Timeline' ) {
+            if (this.runningTimeline === 'Timeline') {
                 this.runningTimeline = 'Marvel Cinematic Universe'
             }
         }
 
         // For h3s start a new time description
-        if ( tagName === 'h3' ) {
+        if (tagName === 'h3') {
             // Reset the time parts
             this.resetTimeParts()
 
-            this.runningTimeParts.primary = cleanBrackets( textContent )
+            this.runningTimeParts.primary = cleanBrackets(textContent)
         }
 
         // For h4s add to the time description
-        if ( tagName === 'h4' ) {
-            this.runningTimeParts.secondary = cleanBrackets( textContent )
+        if (tagName === 'h4') {
+            this.runningTimeParts.secondary = cleanBrackets(textContent)
         }
 
-        if ( tagName === 'ul' ) {
-            this.parseListElement( element )
+        if (tagName === 'ul') {
+            this.parseListElement(element)
         }
     }
 
-    async parseTimelineHTML () {
+    async parseTimelineHTML() {
         const elementSelector = '.mw-parser-output > *'
 
         const html = await this.getTimelineHTML()
 
-        const dom = parseHTML( html )
+        const dom = parseHTML(html)
 
-        const elements = dom.window.document.querySelectorAll( elementSelector )
+        const elements = dom.window.document.querySelectorAll(elementSelector)
 
-        for ( const element of elements ) {
+        for (const element of elements) {
             // Break at 'Characters' section
-            if ( element.textContent === 'Characters' ) {
+            if (element.textContent === 'Characters') {
                 break
             }
 
-            this.parseElement( element )
+            this.parseElement(element)
         }
     }
 
-    async setup () {
+    async setup() {
         await this.parseTimelineHTML()
 
         // console.log( 'this.entries', this.entries.filter( entry => {
@@ -463,63 +464,63 @@ class MarvelMoviesFandomTimeline {
         // }) )
     }
 
-    get entriesByReference () {
+    get entriesByReference() {
         const entriesByReference: Record<string, MarvelMoviesFandomTimelineEntry[]> = {}
         let totalEntriesWithReference = 0
         let totalEntriesWithoutReference = 0
 
-        for ( const entry of this.entries ) {
-            const { primeReferenceTitle } = entry
+        for (const entry of this.entries) {
+            const {primeReferenceTitle} = entry
 
-            if ( !entriesByReference[ primeReferenceTitle ] ) {
-                entriesByReference[ primeReferenceTitle ] = []
+            if (!entriesByReference[primeReferenceTitle]) {
+                entriesByReference[primeReferenceTitle] = []
             }
 
-            entriesByReference[ primeReferenceTitle ].push( entry )
+            entriesByReference[primeReferenceTitle].push(entry)
 
             primeReferenceTitle.length ? totalEntriesWithReference += 1 : totalEntriesWithoutReference += 1
         }
 
         return {
             entries: entriesByReference,
-            titles: Object.keys( entriesByReference ),
+            titles: Object.keys(entriesByReference),
             totalEntriesWithReference,
             totalEntriesWithoutReference,
         }
     }
 
-    async getEntriesByListing () {
+    async getEntriesByListing() {
         const listings = await getListingsByTitleLength()
 
-        return listings.map( ( listing ) => {
-            const { entries } = this.getEntriesForListing( listing )
+        return listings.map((listing) => {
+            const {entries} = this.getEntriesForListing(listing)
 
             return {
                 listing,
                 entries,
             }
-        } )
+        })
     }
 
-    getEntriesForListing ( listing: Listing ) {
+    getEntriesForListing(listing: Listing) {
         // Throw for listings without a title
-        if ( !listing.title ) {
-            throw new Error( 'Listing has no title' )
+        if (!listing.title) {
+            throw new Error('Listing has no title')
         }
 
-        const { titles } = this.entriesByReference
+        const {titles} = this.entriesByReference
 
         // Sort titles by length
-        titles.sort( ( a, b ) => b.length - a.length )
+        titles.sort((a, b) => b.length - a.length)
 
-        for ( const title of titles ) {
+        for (const title of titles) {
             // Skip empty titles
-            if ( !title.length ) {
+            if (!title.length) {
                 continue
             }
 
             // Remove the work 'Prelude' from the title
-            const titleWithoutPrelude = title.split( 'Prelude' )[ 0 ].trim()
+            const titleWithoutPrelude = title.split('Prelude')[0].trim()
 
             // console.log({
             //     // listing,
@@ -527,11 +528,11 @@ class MarvelMoviesFandomTimeline {
             //     titleWithoutPrelude,
             // })
 
-            if ( titleWithoutPrelude.length && matchListingTitle( titleWithoutPrelude, listing ) ) {
+            if (titleWithoutPrelude.length && matchListingTitle(titleWithoutPrelude, listing)) {
                 return {
                     title: titleWithoutPrelude,
                     listingTitle: listing.title,
-                    entries: this.entriesByReference.entries[ title ],
+                    entries: this.entriesByReference.entries[title],
                 }
             }
         }
@@ -543,21 +544,21 @@ class MarvelMoviesFandomTimeline {
         }
     }
 
-    async getShowWithEntries ( slug ) {
+    async getShowWithEntries(slug) {
         const {
             show: showReference,
             season,
             episode,
-        } = getDetailsFromEpisodeSlug( slug )
+        } = getDetailsFromEpisodeSlug(slug)
 
         // When show reference is a string
         // then we'll use it as the title
-        if ( typeof showReference === 'string' ) {
-            const matchingTitle = makeMoviesFandomURLSlug( showReference )
+        if (typeof showReference === 'string') {
+            const matchingTitle = makeMoviesFandomURLSlug(showReference)
 
-            const matchingEpisode = `episode_${ season }.${ String( episode ).padStart( 2, '0' ) }`
+            const matchingEpisode = `episode_${season}.${String(episode).padStart(2, '0')}`
 
-            const matchesShowTitle = entry => this.hasWordsInReferenceLinks( [ matchingTitle, matchingEpisode ], entry )
+            const matchesShowTitle = entry => this.hasWordsInReferenceLinks([matchingTitle, matchingEpisode], entry)
 
             return {
                 entries: this.entries,
@@ -567,29 +568,29 @@ class MarvelMoviesFandomTimeline {
 
         // When show reference is an number
         // We'll assume it's a listing ID
-        if ( typeof showReference === 'number' ) {
+        if (typeof showReference === 'number') {
             const listingsAndEntries = await this.getEntriesByListing()
 
-            const { listing, entries } = listingsAndEntries.find( ( { listing } ) => listing.id === showReference )
+            const {listing, entries} = listingsAndEntries.find(({listing}) => listing.id === showReference)
 
-            const slugifiedTitle = makeMoviesFandomURLSlug( listing.title )
-            const matchingTitle = cleanExtraWordsFromTitle( slugifiedTitle, '_' ).replace( /_/g, '' )
-            const matchingEpisode = `episode_${ season }.${ String( episode ).padStart( 2, '0' ) }`
+            const slugifiedTitle = makeMoviesFandomURLSlug(listing.title)
+            const matchingTitle = cleanExtraWordsFromTitle(slugifiedTitle, '_').replace(/_/g, '')
+            const matchingEpisode = `episode_${season}.${String(episode).padStart(2, '0')}`
 
             // const words = [
             //     matchingTitle,
             //     matchingEpisode
             // ]
 
-            const matchesListing = ( entry ) => {
-                for ( const referenceLink of entry.referenceLinks ) {
+            const matchesListing = (entry) => {
+                for (const referenceLink of entry.referenceLinks) {
                     // const linkText = referenceLink.text.toLowerCase()
                     const linkHref = referenceLink.href.toLowerCase()
-                    const slugifiedLinkHref = makeMoviesFandomURLSlug( linkHref ).replace( /_/g, '' )
+                    const slugifiedLinkHref = makeMoviesFandomURLSlug(linkHref).replace(/_/g, '')
 
                     // Use a more generous compare for the listing title
                     // so that we can match longer titles
-                    const hasMatchingListingTitle = slugifiedLinkHref.includes( matchingTitle )
+                    const hasMatchingListingTitle = slugifiedLinkHref.includes(matchingTitle)
 
                     // if ( linkHref.includes( 'agents' ) ) {
                     //     console.log({
@@ -603,13 +604,13 @@ class MarvelMoviesFandomTimeline {
                     //     })
                     // }
 
-                    if ( !hasMatchingListingTitle ) {
+                    if (!hasMatchingListingTitle) {
                         continue
                     }
 
-                    const hasMatchingEpisode = linkHref.includes( matchingEpisode )
+                    const hasMatchingEpisode = linkHref.includes(matchingEpisode)
 
-                    if ( !hasMatchingEpisode ) {
+                    if (!hasMatchingEpisode) {
                         continue
                     }
 
@@ -625,14 +626,14 @@ class MarvelMoviesFandomTimeline {
             }
         }
 
-        throw new Error( 'Invalid show reference' )
+        throw new Error('Invalid show reference')
     }
 
-    async getEntriesForSlug ( slug ) {
+    async getEntriesForSlug(slug) {
         const {
             matchesShow,
             entries,
-        } = await this.getShowWithEntries( slug )
+        } = await this.getShowWithEntries(slug)
 
         // console.log( 'Starting entry count',  entries.length )
 
@@ -643,34 +644,34 @@ class MarvelMoviesFandomTimeline {
 
         const matchingEntries = new Map()
 
-        for ( const entry of entries ) {
+        for (const entry of entries) {
             // Skip entries without any links
-            if ( !entry.referenceLinks.length ) {
+            if (!entry.referenceLinks.length) {
                 continue
             }
 
             // Skip entries that we've already matched
-            if ( matchingEntries.has( entry.hash ) ) {
+            if (matchingEntries.has(entry.hash)) {
                 continue
             }
 
             // Skip entries without expected show title
-            if ( !matchesShow( entry ) ) {
+            if (!matchesShow(entry)) {
                 continue
             }
 
             // Store the entry
-            matchingEntries.set( entry.hash, entry )
+            matchingEntries.set(entry.hash, entry)
         }
 
         // console.log( 'Ending entry count',  matchingEntries.size )
 
-        return Array.from( matchingEntries.values() )
+        return Array.from(matchingEntries.values())
     }
 }
 
 // Fetch build out Timeline structure
-export async function fetchTimeline () {
+export async function fetchTimeline() {
     const timeline = new MarvelMoviesFandomTimeline()
 
     // Setup
@@ -679,10 +680,10 @@ export async function fetchTimeline () {
     return timeline
 }
 
-export function getTimelineFromEntries ( entries ) {
-    const timeline = new MarvelMoviesFandomTimeline( {
+export function getTimelineFromEntries(entries) {
+    const timeline = new MarvelMoviesFandomTimeline({
         entries,
-    } )
+    })
 
     return timeline
 }

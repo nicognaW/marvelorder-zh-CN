@@ -1,12 +1,12 @@
 // Example - /.netlify/functions/tmdb-image/kbYbZR4FgcLTfI6HT2hiEqoPvr9.webp
-type TMDBImageFunctionUrl = `/.netlify/functions/tmdb-image/${ string }.webp`
+type TMDBImageFunctionUrl = `/.netlify/functions/tmdb-image/${string}.webp`
 
 // Example - /.netlify/functions/fanart/astonishing-x-men-dangerous-5e7124ec3c5d1.png
-type FanartImageFunctionUrl = `/.netlify/functions/fanart/${ string }.png`
+type FanartImageFunctionUrl = `/.netlify/functions/fanart/${string}.png`
 
 type ImageFunctionUrl = TMDBImageFunctionUrl | FanartImageFunctionUrl
 
-type TMDBImagePath = `/${ string }.jpg`
+type TMDBImagePath = `/${string}.jpg`
 
 export interface TMDBData {
     adult: boolean
@@ -17,7 +17,7 @@ export interface TMDBData {
     original_title: string
     overview: string
     poster_path: TMDBImagePath
-    release_date: `${ number }-${ number }-${ number }`
+    release_date: `${number}-${number}-${number}`
     title: string
     video: boolean
     vote_average: number
@@ -88,7 +88,7 @@ export interface Filter {
     exportName: string
     name: string
     slug: string
-    filter: ( listing: Listing ) => boolean
+    filter: (listing: Listing) => boolean
 }
 
 // https://amp.dev/documentation/components/websites/amp-img
@@ -114,10 +114,11 @@ export interface WebStoryLink {
     text: string
     tagName: 'a'
     props: {
-        href: `https://${ string }`
+        href: `https://${string}`
         className?: string
     }
 }
+
 export interface WebStoryLayer {
     props: {
         template: string
@@ -125,9 +126,9 @@ export interface WebStoryLayer {
     }
 
     elements: Array<
-    WebStoryImage
-    | WebStoryText
-    | WebStoryLink
+        WebStoryImage
+        | WebStoryText
+        | WebStoryLink
     >
 }
 
@@ -150,6 +151,7 @@ export interface WebStoryJsonBookend {
         image?: string
     }>
 }
+
 export interface WebStory {
     standalone: string
     title: string

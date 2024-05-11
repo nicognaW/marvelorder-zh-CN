@@ -24,24 +24,24 @@ const rawInlineStyles = [
 ].join('\n\n\n')
 
 const inlineStyles = esbuild.transformSync(rawInlineStyles, {
-  loader: 'css',
-  minify: true,
+    loader: 'css',
+    minify: true,
 }).code
 
 // console.log( 'inlineStyles', inlineStyles )
 
-const { content = {} } = Astro.props;
+const {content = {}} = Astro.props;
 const currentPage = new URL(Astro.request.url).pathname
-const storySlug = currentPage.replace( /^\/|\/$/g, '' ).split('/').pop()
+const storySlug = currentPage.replace(/^\/|\/$/g, '').split('/').pop()
 
 const videoPosterUrl = content.coverPosterUrl
 const coverBackgroundSrc = content.coverVideoUrl ? content.coverVideoUrl : content.coverPosterUrl
 const canonicalUrl = Astro.url.pathname
 const author = ''
 
-const storyTaggedListings = !!content?.lists ? await getTaggedListings( content.lists ) : []
+const storyTaggedListings = !!content?.lists ? await getTaggedListings(content.lists) : []
 
-const fromContent = await mapStoryContentToListings( Astro.props.rawContent() )
+const fromContent = await mapStoryContentToListings(Astro.props.rawContent())
 
 // console.log( 'fromContent', fromContent.listings[0].backdrop() )
 
@@ -52,37 +52,36 @@ const storyListings = [
 
 // If there are no listings,
 // then push listings from filter slug
-if ( storyListings.length === 0 ) {
-    const listings = await getListingsFromFilterSlug( storySlug )
-    storyListings.push( ...listings )
+if (storyListings.length === 0) {
+    const listings = await getListingsFromFilterSlug(storySlug)
+    storyListings.push(...listings)
 }
 
-const watchOrder = storyListings.map( ( listing, index ) => {
+const watchOrder = storyListings.map((listing, index) => {
     return {
         order: index + 1,
         listing
     }
-} )
+})
 
-const watchOrderPages = splitArray( watchOrder, 5 )
+const watchOrderPages = splitArray(watchOrder, 5)
 
 
 // console.log( 'storyTaggedListings', storyTaggedListings )
-
 ---
 <!DOCTYPE html>
 <html ⚡>
-    <head>
-        <HeadCommon />
+<head>
+    <HeadCommon/>
 
-        <title>{ content.title } - { author }</title>
+    <title>{content.title } - { author }</title>
 
         <!-- Preloads -->
         <link href="https://cdn.ampproject.org/v0.js" rel="preload">
         <link href="https://cdn.ampproject.org/v0/amp-story-1.0.js" rel="preload">
         <link href="https://cdn.ampproject.org/v0/amp-video-0.1.js" rel="preload">
 
-        <link rel="canonical" href={ canonicalUrl } />
+        <link rel="canonical" href={canonicalUrl}/>
 
         <!-- Take note of the unique scripts used here. Most, if not all Web Stories will require the first two scripts. -->
         <script async src="https://cdn.ampproject.org/v0.js"></script>
@@ -96,7 +95,7 @@ const watchOrderPages = splitArray( watchOrder, 5 )
             async
             custom-element="amp-video"
             src="https://cdn.ampproject.org/v0/amp-video-0.1.js"
-        ></script>
+            ></script>
 
 
         <style
@@ -109,6 +108,7 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                 -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
                 animation: -amp-start 8s steps(1, end) 0s 1 normal both;
             }
+
             @-webkit-keyframes -amp-start {
                 from {
                     visibility: hidden;
@@ -117,6 +117,7 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                     visibility: visible;
                 }
             }
+
             @-moz-keyframes -amp-start {
                 from {
                     visibility: hidden;
@@ -125,6 +126,7 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                     visibility: visible;
                 }
             }
+
             @-ms-keyframes -amp-start {
                 from {
                     visibility: hidden;
@@ -133,6 +135,7 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                     visibility: visible;
                 }
             }
+
             @-o-keyframes -amp-start {
                 from {
                     visibility: hidden;
@@ -141,6 +144,7 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                     visibility: visible;
                 }
             }
+
             @keyframes -amp-start {
                 from {
                     visibility: hidden;
@@ -169,18 +173,18 @@ const watchOrderPages = splitArray( watchOrder, 5 )
         <style
             is:inline
             amp-custom
-            set:html={ inlineStyles }
+            set:html={inlineStyles}
         />
-    </head>
-    <body>
+        </head>
+        <body>
         <!-- Everything else is included inside the single child of the body element -- amp-story. -->
         <!-- Four attributes are required for stories to be discovered on the web. Title, publisher name, publisher logo, and poster image. -->
         <amp-story
             standalone=""
-            title={ content.title }
-            publisher={ author }
+            title={content.title}
+            publisher={author}
             publisher-logo-src="/mark.png"
-            poster-portrait-src={ videoPosterUrl }
+            poster-portrait-src={videoPosterUrl}
             class="text-white"
         >
             <!-- These metadata attributes supplement and do not replace any Structured Data (e.g. JSON-LD) on the page. To ensure your Web Stories are discovered across all platforms, you should add Structured Data to all your AMP pages, including AMP stories. -->
@@ -188,28 +192,28 @@ const watchOrderPages = splitArray( watchOrder, 5 )
             <!-- Cover page -->
             <StoryPage
                 id="cover"
-                backgroundSrc={ coverBackgroundSrc }
-                backgroundPoster={ videoPosterUrl }
-                mediaAriaLabel={ content.coverAriaLabel }
+                backgroundSrc={coverBackgroundSrc}
+                backgroundPoster={videoPosterUrl}
+                mediaAriaLabel={content.coverAriaLabel}
             >
                 <amp-story-grid-layer
                     template="vertical"
                     class="content-end"
                 >
-                    <MainHeading>{ content.title }</MainHeading>
-                    <p>{ author }</p>
+                    <MainHeading>{content.title}</MainHeading>
+                    <p>{author}</p>
                 </amp-story-grid-layer>
             </StoryPage>
 
-            { storyListings.map( listing => (
+            {storyListings.map(listing => (
                 <StoryPage
-                    id={ `page-${ listing.elementId }` }
-                    backgroundSrc={ listing.backdrop() }
+                    id={`page-${listing.elementId}`}
+                    backgroundSrc={listing.backdrop()}
                 >
                     <amp-story-grid-layer template="vertical">
-                        { listing.hasLogo && (
+                        {listing.hasLogo && (
                             <amp-img
-                                src={ listing.logo_on_black }
+                                src={listing.logo_on_black}
                                 width="1.5"
                                 height="1"
                                 layout="responsive"
@@ -217,19 +221,19 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                             >
                             </amp-img>
                         )}
-                        <small>{ listing.year }</small>
-                        <MainHeading>{ listing.title }</MainHeading>
-                        <p class="text-sm">{ listing.description }</p>
+                        <small>{listing.year}</small>
+                        <MainHeading>{listing.title}</MainHeading>
+                        <p class="text-sm">{listing.description}</p>
                     </amp-story-grid-layer>
                 </StoryPage>
             ))}
 
-            { watchOrderPages.map( ( pageListings, index ) => (
+            {watchOrderPages.map((pageListings, index) => (
                 <StoryPage
-                    id={ `story-watch-order-page-${ index }` }
-                    backgroundSrc={ videoPosterUrl }
-                    backgroundPoster={ videoPosterUrl }
-                    mediaAriaLabel={ content.coverAriaLabel }
+                    id={`story-watch-order-page-${index}`}
+                    backgroundSrc={videoPosterUrl}
+                    backgroundPoster={videoPosterUrl}
+                    mediaAriaLabel={content.coverAriaLabel}
                     backgroundClass="opacity-5"
                 >
                     <amp-story-grid-layer
@@ -241,41 +245,42 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                         <div>
 
                             <div class="mt-6 flow-root">
-                            <ul role="list" class="-my-5 divide-y divide-gray-200">
-                                { pageListings.map( ({ order, listing }) => (
-                                    <li class="py-2">
-                                        <div class="flex items-center justify-between gap-4">
-                                            <div class="flex-shrink-0 flex gap-4">
-                                                <div class="h-8 w-8 flex justify-center items-center font-black rounded-full backdrop-blur border border-solid border-white">{ order }</div>
-                                                <a
-                                                    href={ listing.endpoint }
-                                                    title={ listing.title }
-                                                >
-                                                    { listing.hasLogo ? (
-                                                        <amp-img
-                                                            src={ listing.logo_on_black }
-                                                            width="1.5"
-                                                            height="1"
-                                                            layout="responsive"
-                                                            class="h-16 w-16 [&>*]:object-contain"
-                                                        >
-                                                        </amp-img>
-                                                    ) : (<div>{ listing.title }</div>) }
-                                                </a>
-                                            </div>
-                                            <div class="">
-                                                <div class="min-w-0 flex-1">
-                                                    <p class="truncate text-xs font-medium">{ listing.title }</p>
-                                                    <p class="truncate text-xs ">{ listing.year }</p>
+                                <ul role="list" class="-my-5 divide-y divide-gray-200">
+                                    {pageListings.map(({order, listing}) => (
+                                        <li class="py-2">
+                                            <div class="flex items-center justify-between gap-4">
+                                                <div class="flex-shrink-0 flex gap-4">
+                                                    <div
+                                                        class="h-8 w-8 flex justify-center items-center font-black rounded-full backdrop-blur border border-solid border-white">{order}</div>
+                                                    <a
+                                                        href={listing.endpoint}
+                                                        title={listing.title}
+                                                    >
+                                                        {listing.hasLogo ? (
+                                                            <amp-img
+                                                                src={listing.logo_on_black}
+                                                                width="1.5"
+                                                                height="1"
+                                                                layout="responsive"
+                                                                class="h-16 w-16 [&>*]:object-contain"
+                                                            >
+                                                            </amp-img>
+                                                        ) : (
+                                                            <div>{listing.title}</div>)}
+                                                    </a>
+                                                </div>
+                                                <div class="">
+                                                    <div class="min-w-0 flex-1">
+                                                        <p class="truncate text-xs font-medium">{listing.title}</p>
+                                                        <p class="truncate text-xs ">{listing.year}</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                )) }
+                                        </li>
+                                    ))}
 
 
-
-                            </ul>
+                                </ul>
                             </div>
 
                         </div>
@@ -291,12 +296,18 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                     is:inline
                 >
                     {
-                        "bookendVersion": "v1.0",
-                        "shareProviders": [
+                        "bookendVersion"
+                    :
+                        "v1.0",
+                            "shareProviders"
+                    :
+                        [
                             "twitter",
                             "email"
                         ],
-                        "components": [
+                            "components"
+                    :
+                        [
                             {
                                 "type": "heading",
                                 "text": "More to read"
@@ -308,9 +319,9 @@ const watchOrderPages = splitArray( watchOrder, 5 )
                                 "image": "assets/houses-giethoorn-holland.jpg"
                             }
                         ]
-                      }
+                    }
                 </script>
             </amp-story-bookend>
         </amp-story>
-    </body>
-</html>
+        </body>
+        </html>

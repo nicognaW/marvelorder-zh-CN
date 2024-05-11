@@ -20,15 +20,15 @@ const pageAttributes = {
 
 
 const backgroundType = (() => {
-    if ( typeof backgroundSrc !== 'string' ) {
+    if (typeof backgroundSrc !== 'string') {
         return avengersBackdrop
     }
 
-    if ( backgroundSrc.endsWith('.mp4') ) {
+    if (backgroundSrc.endsWith('.mp4')) {
         return 'video'
     }
 
-    if ( backgroundSrc.includes('.webp') || backgroundSrc.includes('.jpg') ) {
+    if (backgroundSrc.includes('.webp') || backgroundSrc.includes('.jpg')) {
         return 'image'
     }
 
@@ -40,35 +40,37 @@ const backgroundType = (() => {
     class="bg-black"
     { ...pageAttributes }
 >
-    { backgroundType === 'video' && (
+    {backgroundType === 'video' && (
         // Video Poster BG
         // Each amp-story-page component must have at least one or more layer components, which stack upon one another to create visual effects.
+
         <amp-story-grid-layer
             template="fill"
-            class={ backgroundClass }
+            class={backgroundClass}
         >
             <amp-video
                 autoplay
                 loop
                 width="720"
                 height="1280"
-                poster={ backgroundPoster }
+                poster={backgroundPoster}
                 layout="responsive"
-                title={ Astro.props.mediaAriaLabel }
+                title={Astro.props.mediaAriaLabel}
             >
-                <source src={ backgroundSrc } type="video/mp4" />
+                <source src={backgroundSrc} type="video/mp4"/>
             </amp-video>
         </amp-story-grid-layer>
     )}
 
-    { backgroundType === 'image' && (
+    {backgroundType === 'image' && (
         // Image Poster BG
+
         <amp-story-grid-layer
             template="fill"
-            class={ backgroundClass }
+            class={backgroundClass}
         >
             <amp-img
-                src={ backgroundSrc }
+                src={backgroundSrc}
                 width="720"
                 height="1280"
                 layout="responsive"
@@ -76,5 +78,5 @@ const backgroundType = (() => {
             </amp-img>
         </amp-story-grid-layer>
     )}
-    <slot />
+    <slot/>
 </amp-story-page>

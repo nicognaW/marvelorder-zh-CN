@@ -1,5 +1,5 @@
-import { get } from '~/src/pages/api/fanart/[...slug]'
+import {get} from '~/src/pages/api/fanart/[...slug]'
 
 export const prerender = false
 
-export { get }
+export {get}

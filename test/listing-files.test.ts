@@ -1,8 +1,8 @@
 // https://vitest.dev/api/
-import { expect, test } from 'vitest'
-import { faker } from '@faker-js/faker'
+import {expect, test} from 'vitest'
+import {faker} from '@faker-js/faker'
 
-import type { Listing } from '~/src/types/listing.ts'
+import type {Listing} from '~/src/types/listing.ts'
 import {
     getListingDetailsFromPaths,
     getListingFiles,
@@ -28,49 +28,49 @@ import {
 //     tags: [ faker.lorem.word(), faker.lorem.word() ],
 // }
 
-test( 'Can insert listing Frontmatter Data', async () => {
+test('Can insert listing Frontmatter Data', async () => {
     const sourceListing: Listing = {
         title: faker.lorem.sentence(),
         slug: faker.lorem.slug(),
         overview: faker.lorem.paragraph(),
     }
 
-    const markdownOutput = await upsertListingFrontmatter( sourceListing, { works: true } )
+    const markdownOutput = await upsertListingFrontmatter(sourceListing, {works: true})
 
     // console.log('markdownOutput', markdownOutput)
 
-    expect( markdownOutput ).toContain( 'works: true' )
-} )
+    expect(markdownOutput).toContain('works: true')
+})
 
-test( 'Can merge Frontmatter arrays', async () => {
+test('Can merge Frontmatter arrays', async () => {
     const sourceListing: Listing = {
         title: faker.lorem.sentence(),
         slug: faker.lorem.slug(),
         overview: faker.lorem.paragraph(),
-        tags: [ 'can-retain-tags' ],
+        tags: ['can-retain-tags'],
     }
 
-    const markdownOutput = await upsertListingFrontmatter( sourceListing, { tags: [ 'can-add-tags' ] } )
+    const markdownOutput = await upsertListingFrontmatter(sourceListing, {tags: ['can-add-tags']})
 
     // console.log('markdownOutput', markdownOutput)
 
-    expect( markdownOutput ).toContain( '- can-add-tags' )
-    expect( markdownOutput ).toContain( '- can-retain-tags' )
-} )
+    expect(markdownOutput).toContain('- can-add-tags')
+    expect(markdownOutput).toContain('- can-retain-tags')
+})
 
-function noEndingBackSlashes ( arrayOrObject ) {
-    const array = Array.isArray( arrayOrObject ) ? arrayOrObject : Object.values( arrayOrObject )
+function noEndingBackSlashes(arrayOrObject) {
+    const array = Array.isArray(arrayOrObject) ? arrayOrObject : Object.values(arrayOrObject)
 
-    for ( const value of array ) {
-        if ( typeof value === 'string' && value.endsWith( '\\' ) ) {
+    for (const value of array) {
+        if (typeof value === 'string' && value.endsWith('\\')) {
             // console.log( 'value', value )
             return false
         }
 
-        if ( Object( value ) === value || Array.isArray( value ) ) {
-            const child = noEndingBackSlashes( value )
+        if (Object(value) === value || Array.isArray(value)) {
+            const child = noEndingBackSlashes(value)
 
-            if ( !child ) {
+            if (!child) {
                 return false
             }
         }
@@ -79,38 +79,38 @@ function noEndingBackSlashes ( arrayOrObject ) {
     return true
 }
 
-test( 'No listing frontmatter properties end with backward slash', async () => {
+test('No listing frontmatter properties end with backward slash', async () => {
     const listingFiles = await getListingFiles()
 
     // console.log( 'listingFiles', listingFiles )
 
-    const details = await getListingDetailsFromPaths( listingFiles )
+    const details = await getListingDetailsFromPaths(listingFiles)
 
-    expect( noEndingBackSlashes( details ) ).toBe( true )
-} )
+    expect(noEndingBackSlashes(details)).toBe(true)
+})
 
-test( 'Can get Disney+ In Universe Timeline', async () => {
+test('Can get Disney+ In Universe Timeline', async () => {
     const universeTimeline = await getInUniverseTimeline()
 
-    expect( universeTimeline ).toBeDefined()
-    expect( universeTimeline.length ).toBeGreaterThan( 0 )
+    expect(universeTimeline).toBeDefined()
+    expect(universeTimeline.length).toBeGreaterThan(0)
 
-    expect( universeTimeline[ 0 ].title ).toContain( 'First Avenger' )
-} )
+    expect(universeTimeline[0].title).toContain('First Avenger')
+})
 
-test( 'Can match Disney+ In Universe Timeline to save listings', async () => {
+test('Can match Disney+ In Universe Timeline to save listings', async () => {
     const universeTimelineAndListings = await getInUniverseTimelineAndListings()
 
-    for ( const { mappedListing } of universeTimelineAndListings ) {
+    for (const {mappedListing} of universeTimelineAndListings) {
         // console.log( 'mappedListing', mappedListing )
-        expect( mappedListing ).toHaveProperty( 'title' )
+        expect(mappedListing).toHaveProperty('title')
     }
-} )
+})
 
-test( 'Can see Thor 1 within Disney+ In Universe Timeline', async () => {
+test('Can see Thor 1 within Disney+ In Universe Timeline', async () => {
     const universeTimelineAndListings = await getInUniverseTimelineAndListings()
 
-    const thor1 = universeTimelineAndListings.find( ( { mappedListing } ) => mappedListing.title === 'Thor' )
+    const thor1 = universeTimelineAndListings.find(({mappedListing}) => mappedListing.title === 'Thor')
 
-    expect( thor1 ).toBeDefined()
-} )
+    expect(thor1).toBeDefined()
+})

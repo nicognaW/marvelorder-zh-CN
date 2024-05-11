@@ -1,4 +1,4 @@
-import type { Listing } from './types.ts'
+import type {Listing} from './types.ts'
 
 import {
     getDateString,
@@ -19,29 +19,29 @@ export const sortTypes: any = {
     'title-length': byTitleLength,
 }
 
-export function getSortByName ( sortType: string ) {
-    return sortTypes[ sortType ]
+export function getSortByName(sortType: string) {
+    return sortTypes[sortType]
 }
 
-function getTitleDate ( listing: Listing ) {
-    const isMappedListing = Object.keys( listing ).includes( 'isMappedListing' )// typeof listing.isMappedListing !== 'undefined'
+function getTitleDate(listing: Listing) {
+    const isMappedListing = Object.keys(listing).includes('isMappedListing')// typeof listing.isMappedListing !== 'undefined'
 
     const sourceListing = isMappedListing ? listing.sourceListing : listing
     // const dateString = sourceListing?.release_date || sourceListing?.first_air_date
-    const dateString = getDateString( listing )
+    const dateString = getDateString(listing)
 
-    if ( !!dateString && !!sourceListing ) {
-        const isoDate: string = getIsoDate( sourceListing ) || ''
+    if (!!dateString && !!sourceListing) {
+        const isoDate: string = getIsoDate(sourceListing) || ''
 
         // Throw for invalid date
-        if ( isoDate.trim().length === 0 ) {
-            throw new Error( `Invalid date: ${ dateString }` )
+        if (isoDate.trim().length === 0) {
+            throw new Error(`Invalid date: ${dateString}`)
         }
 
-        return new Date( isoDate )
+        return new Date(isoDate)
     }
 
-    if ( hasLogo( listing ) ) {
+    if (hasLogo(listing)) {
         return bigOleNumber - 1
     }
 
@@ -50,50 +50,48 @@ function getTitleDate ( listing: Listing ) {
     return Number.POSITIVE_INFINITY
 }
 
-export function noSort () {
+export function noSort() {
     return 0
 }
 
-export function byPremiere ( a: Listing, b: Listing ) {
-    const aDate = getTitleDate( a )
-    const bDate = getTitleDate( b )
+export function byPremiere(a: Listing, b: Listing) {
+    const aDate = getTitleDate(a)
+    const bDate = getTitleDate(b)
 
-    if ( aDate > bDate ) {
+    if (aDate > bDate) {
         return -1
-    }
-    else if ( aDate < bDate ) {
+    } else if (aDate < bDate) {
         return 1
     }
 }
 
-export function byTimelineOrder ( a: Listing, b: Listing ) {
+export function byTimelineOrder(a: Listing, b: Listing) {
     const aOrder = a.mcuTimelineOrder || 0
     const bOrder = b.mcuTimelineOrder || 0
 
-    if ( aOrder > bOrder ) {
+    if (aOrder > bOrder) {
         return 1
     }
 
-    if ( aOrder < bOrder ) {
+    if (aOrder < bOrder) {
         return -1
     }
 
     return 0
 }
 
-export function byPremiereReversed ( a: Listing, b: Listing ) {
-    return Number( byPremiere( a, b ) ) * -1
+export function byPremiereReversed(a: Listing, b: Listing) {
+    return Number(byPremiere(a, b)) * -1
 }
 
 // Sort by longest titles first
-export function byTitleLength ( a: Listing, b: Listing ) {
+export function byTitleLength(a: Listing, b: Listing) {
     const aTitle = a.title || ''
     const bTitle = b.title || ''
 
-    if ( aTitle.length > bTitle.length ) {
+    if (aTitle.length > bTitle.length) {
         return -1
-    }
-    else if ( aTitle.length < bTitle.length ) {
+    } else if (aTitle.length < bTitle.length) {
         return 1
     }
 

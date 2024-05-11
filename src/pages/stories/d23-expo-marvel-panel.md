@@ -7,19 +7,17 @@ coverVideoUrl: https://vumbnail.com/olgztt2oz8Q.mp4
 coverPosterUrl: https://vumbnail.com/oy0G2jT8Nqo.jpg
 ---
 
-
 ## Cover
 
 D23 博览会上漫威发布会的所有公告详情
 
 ## [黑豹2：瓦坎达万岁](https://marvelorder.com/en/black-panther-wakanda-forever-505642/)
+
 新预告片展示了莉莉的飞行、朵拉·米拉杰、纳摩和阿图玛的力量！还有一幕精彩的朵拉·米拉杰消灭试图偷取振金的士兵的场景。
 
 拉蒙达女王在联合国发表演讲，警告振金落入他人之手的危险，同时穿插的画面展示了雇佣兵试图偷取振金并与朵拉·米拉杰发生战斗的情景。
 
 瑞恩·库格勒还在放映独家片段后透露，舒莉将在影片中担任最重要的角色。
-
-
 
 ## [钢铁之心](https://marvelorder.com/en/ironheart-114471/)
 
@@ -29,17 +27,13 @@ D23 博览会上漫威发布会的所有公告详情
 
 安东尼·拉莫斯现身舞台，并确认饰演“兜帽”一角。
 
-
 ## [蚁人3：量子狂热](https://marvelorder.com/en/ant-man-and-the-wasp-quantumania-640146/)
 
 《蚁人3：量子狂热》以宏大的方式开启了漫威电影宇宙的第五阶段，并为《复仇者联盟：康王朝》铺路！
 
-
 ## [暗夜狼人](https://marvelorder.com/en/werewolf-by-night-894205/)
 
 漫威首部万圣节特别剧集《暗夜狼人》将于今年十月首播。
-
-
 
 ## [秘密入侵](https://marvelorder.com/en/secret-invasion-114472/)
 
@@ -47,13 +41,12 @@ D23 博览会上漫威发布会的所有公告详情
 
 《秘密入侵》还将直接引入《装甲战争》！
 
-
-
 ## [装甲战争](https://marvelorder.com/en/armor-wars-1030022/)
 
 唐·钱德尔将回归漫威影业的《装甲战争》，即将登陆 Disney Plus。
 
 《装甲战争》讲述斯塔克科技落入不法之徒手中，并将处理《秘密入侵》带来的后果。
+
 ## [洛基 第二季](https://marvelorder.com/en/loki-84958/)
 
 《洛基》第二季将再次探索多元宇宙。
