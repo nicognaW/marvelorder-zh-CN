@@ -64,7 +64,7 @@ export default {
     },
     computed: {
         label() {
-            return this.seenListing ? 'Seen' : 'Mark as Seen'
+            return this.seenListing ? '看过' : '标记为看过'
         },
     },
     mounted() {
